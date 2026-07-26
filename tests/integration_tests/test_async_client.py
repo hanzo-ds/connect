@@ -8,9 +8,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from clickhouse_connect.driver.options import arrow
+from datastore_connect.driver.options import arrow
 
-from clickhouse_connect.driver import AsyncClient
+from datastore_connect.driver import AsyncClient
 
 
 @pytest.mark.asyncio

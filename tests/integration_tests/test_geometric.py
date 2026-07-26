@@ -1,6 +1,6 @@
 from typing import Callable
 
-from clickhouse_connect.driver import Client
+from datastore_connect.driver import Client
 
 
 def test_point_column(test_client: Client, table_context: Callable):

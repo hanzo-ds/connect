@@ -13,8 +13,8 @@ Please share your ideas, contribute to the codebase, and help us maintain up-to-
 ### Create a fork of the repository and clone it
 
 ```bash
-git clone https://github.com/[YOUR_USERNAME]/clickhouse-connect
-cd clickhouse-connect
+git clone https://github.com/[YOUR_USERNAME]/datastore-connect
+cd datastore-connect
 ```
 
 ### Add PYTHONPATH
@@ -22,7 +22,7 @@ cd clickhouse-connect
 Add the project directory to the `PYTHONPATH` environment variable to make the driver sources are available for import.
 
 ```bash
-export PYTHONPATH="/absolute/path/to/clickhouse-connect"
+export PYTHONPATH="/absolute/path/to/datastore-connect"
 ```
 
 ### Prepare a new virtual environment
@@ -40,7 +40,7 @@ pip install -r tests/test_requirements.txt
 ### Run the setup script
 
 The driver uses several Cython extensions that provide additional performance improvements 
-(see the [clickhouse_connect/driverc](clickhouse_connect/driverc) directory).
+(see the [datastore_connect/driverc](datastore_connect/driverc) directory).
 To compile the extensions, run the following command:
 
 ```bash
@@ -65,8 +65,8 @@ sudo -- sh -c "echo 127.0.0.1 server1.clickhouse.test >> /etc/hosts"
 
 ### PyCharm setup
 
-If you use PyCharm as your IDE, make sure that you have `clickhouse-connect` added to the project structure as a source path. 
-Go to Settings -> Project (clickhouse-connect) -> Project structure, right click on `clickhouse-connect` folder, and mark it as "Sources".
+If you use PyCharm as your IDE, make sure that you have `datastore-connect` added to the project structure as a source path. 
+Go to Settings -> Project (datastore-connect) -> Project structure, right click on `datastore-connect` folder, and mark it as "Sources".
 
 ## Testing
 
@@ -143,6 +143,6 @@ It is always a good idea to run the linter before committing the changes, as thi
 
 ```bash
 pip install pylint
-pylint clickhouse_connect
+pylint datastore_connect
 pylint tests
 ```

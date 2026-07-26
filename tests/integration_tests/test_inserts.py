@@ -1,8 +1,8 @@
 from decimal import Decimal
 from typing import Callable
 
-from clickhouse_connect.driver.client import Client
-from clickhouse_connect.driver.exceptions import DataError
+from datastore_connect.driver.client import Client
+from datastore_connect.driver.exceptions import DataError
 
 
 def test_insert(test_client: Client, test_table_engine: str):

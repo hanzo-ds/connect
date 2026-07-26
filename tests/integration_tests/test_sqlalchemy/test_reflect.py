@@ -2,8 +2,8 @@
 import sqlalchemy as db
 from sqlalchemy.engine import Engine
 
-from clickhouse_connect import common
-from clickhouse_connect.cc_sqlalchemy.datatypes.sqltypes import UInt32, SimpleAggregateFunction, Point
+from datastore_connect import common
+from datastore_connect.cc_sqlalchemy.datatypes.sqltypes import UInt32, SimpleAggregateFunction, Point
 
 
 def test_basic_reflection(test_engine: Engine):

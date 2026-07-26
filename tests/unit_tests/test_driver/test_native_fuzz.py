@@ -1,10 +1,10 @@
 import os
 import random
 
-from clickhouse_connect.datatypes.registry import get_from_name
-from clickhouse_connect.driver.common import coerce_bool
-from clickhouse_connect.driver.buffer import ResponseBuffer as PyBuff
-from clickhouse_connect.driverc.buffer import ResponseBuffer as CBuff  # pylint: disable=no-name-in-module
+from datastore_connect.datatypes.registry import get_from_name
+from datastore_connect.driver.common import coerce_bool
+from datastore_connect.driver.buffer import ResponseBuffer as PyBuff
+from datastore_connect.driverc.buffer import ResponseBuffer as CBuff  # pylint: disable=no-name-in-module
 from tests.helpers import random_columns, random_data, native_transform, native_insert_block, bytes_source
 
 TEST_COLUMNS = 12

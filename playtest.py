@@ -1,9 +1,9 @@
-import clickhouse_connect
+import datastore_connect
 
 
 def main():
-    print(f'\nClickHouse Connect installed version: {clickhouse_connect.version()}')
-    client = clickhouse_connect.get_client(host='play.clickhouse.com',
+    print(f'\nClickHouse Connect installed version: {datastore_connect.version()}')
+    client = datastore_connect.get_client(host='play.clickhouse.com',
                                            username='play',
                                            password='clickhouse',
                                            port=443)

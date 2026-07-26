@@ -13,7 +13,7 @@ ClickHouse Connect currently uses the ClickHouse HTTP interface for maximum comp
 ### Installation
 
 ```
-pip install clickhouse-connect
+pip install datastore-connect
 ```
 
 ClickHouse Connect requires Python 3.8 or higher.
@@ -22,8 +22,8 @@ ClickHouse Connect requires Python 3.8 or higher.
 
 ClickHouse Connect is fully integrated with Apache Superset. Previous versions of ClickHouse Connect utilized a
 dynamically loaded Superset Engine Spec, but as of Superset v2.1.0 the engine spec was incorporated into the main
-Apache Superset project and removed from clickhouse-connect in v0.6.0. If you have issues connecting to earlier
-versions of Superset, please use clickhouse-connect v0.5.25.
+Apache Superset project and removed from datastore-connect in v0.6.0. If you have issues connecting to earlier
+versions of Superset, please use datastore-connect v0.5.25.
 
 When creating a Superset Data Source, either use the provided connection dialog, or a SqlAlchemy DSN in the form
 `clickhousedb://{username}:{password}@{host}:{port}`.

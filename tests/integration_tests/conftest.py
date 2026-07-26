@@ -8,12 +8,12 @@ from typing import Iterator, NamedTuple, Sequence, Optional, Callable, AsyncCont
 import pytest_asyncio
 from pytest import fixture
 
-from clickhouse_connect import common
-from clickhouse_connect.driver.common import coerce_bool
-from clickhouse_connect.driver.exceptions import OperationalError
-from clickhouse_connect.tools.testing import TableContext
-from clickhouse_connect.driver.httpclient import HttpClient
-from clickhouse_connect.driver import AsyncClient, Client, create_client
+from datastore_connect import common
+from datastore_connect.driver.common import coerce_bool
+from datastore_connect.driver.exceptions import OperationalError
+from datastore_connect.tools.testing import TableContext
+from datastore_connect.driver.httpclient import HttpClient
+from datastore_connect.driver import AsyncClient, Client, create_client
 from tests.helpers import PROJECT_ROOT_DIR
 
 

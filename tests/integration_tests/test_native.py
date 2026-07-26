@@ -7,10 +7,10 @@ from typing import Callable
 
 import pytest
 
-from clickhouse_connect.datatypes.format import set_default_formats, clear_default_format, set_read_format, \
+from datastore_connect.datatypes.format import set_default_formats, clear_default_format, set_read_format, \
     set_write_format
-from clickhouse_connect.driver import Client
-from clickhouse_connect.driver.common import coerce_bool
+from datastore_connect.driver import Client
+from datastore_connect.driver.common import coerce_bool
 
 
 def test_low_card(test_client: Client, table_context: Callable):

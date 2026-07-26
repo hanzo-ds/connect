@@ -6,9 +6,9 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session
 
-from clickhouse_connect.cc_sqlalchemy.datatypes.sqltypes import LowCardinality, String, UInt64
-from clickhouse_connect.cc_sqlalchemy.ddl.tableengine import engine_map
-from clickhouse_connect.driver import Client
+from datastore_connect.cc_sqlalchemy.datatypes.sqltypes import LowCardinality, String, UInt64
+from datastore_connect.cc_sqlalchemy.ddl.tableengine import engine_map
+from datastore_connect.driver import Client
 
 
 @fixture(scope='module', autouse=True, name='test_model')

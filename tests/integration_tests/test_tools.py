@@ -1,8 +1,8 @@
 from pathlib import Path
 from typing import Callable
 
-from clickhouse_connect.driver import Client
-from clickhouse_connect.driver.tools import insert_file
+from datastore_connect.driver import Client
+from datastore_connect.driver.tools import insert_file
 from tests.integration_tests.conftest import TestConfig
 
 

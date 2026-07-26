@@ -2,7 +2,7 @@ from os import environ
 
 import pytest
 
-from clickhouse_connect.driver import create_client, ProgrammingError, create_async_client
+from datastore_connect.driver import create_client, ProgrammingError, create_async_client
 from tests.integration_tests.conftest import TestConfig
 
 

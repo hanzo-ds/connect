@@ -8,9 +8,9 @@ import argparse
 from ipaddress import IPv6Address
 from typing import List
 
-import clickhouse_connect
-from clickhouse_connect.datatypes.format import set_default_formats
-from clickhouse_connect.driver.client import Client
+import datastore_connect
+from datastore_connect.datatypes.format import set_default_formats
+from datastore_connect.driver.client import Client
 
 columns = {
     'int8': ('Int8', -44),
@@ -94,7 +94,7 @@ def main():
                 sys.exit()
     else:
         col_names = standard_cols
-    client = clickhouse_connect.get_client(compress=False)
+    client = datastore_connect.get_client(compress=False)
 
     set_default_formats('IP*', 'native', '*Int64', 'native')
     create_table(client, col_names, rows)
