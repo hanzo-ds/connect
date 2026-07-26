@@ -9,7 +9,7 @@ from tests.integration_tests.conftest import TestConfig
 
 def test_threading_error(test_config: TestConfig, test_client: Client):
     if test_config.cloud:
-        pytest.skip('Skipping threading test in ClickHouse Cloud')
+        pytest.skip('Skipping threading test in Datastore Cloud')
     thrown = None
 
     class QueryThread (threading.Thread):

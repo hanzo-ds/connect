@@ -3,7 +3,7 @@ from typing import Sequence, MutableSequence, Union, Collection, Any
 from datastore_connect.driver.common import first_value
 from datastore_connect.driver.ctypes import data_conv
 
-from datastore_connect.datatypes.base import ClickHouseType, TypeDef
+from datastore_connect.datatypes.base import DatastoreType, TypeDef
 from datastore_connect.driver.errors import handle_error
 from datastore_connect.driver.insert import InsertContext
 from datastore_connect.driver.query import QueryContext
@@ -11,7 +11,7 @@ from datastore_connect.driver.types import ByteSource
 from datastore_connect.driver.options import np, pd
 
 
-class String(ClickHouseType):
+class String(DatastoreType):
     valid_formats = 'bytes', 'native'
 
     def _active_encoding(self, ctx):
@@ -57,7 +57,7 @@ class String(ClickHouseType):
         return ''
 
 
-class FixedString(ClickHouseType):
+class FixedString(DatastoreType):
     valid_formats = 'string', 'native'
 
     def __init__(self, type_def: TypeDef):

@@ -1,6 +1,6 @@
 ## Contributing guidelines
 
-ClickHouse-connect is an open-source project, and we welcome any contributions from the community. 
+Datastore-connect is an open-source project, and we welcome any contributions from the community. 
 Please share your ideas, contribute to the codebase, and help us maintain up-to-date documentation.
 
 ## Setting up your environment
@@ -56,11 +56,11 @@ python setup.py develop
 ### Add /etc/hosts entry
 
 Required for TLS tests.
-The generated certificates assume TLS requests use `server1.clickhouse.test` as the hostname.
+The generated certificates assume TLS requests use `server1.datastore.test` as the hostname.
 See [test_tls.py](tests/integration_tests/test_tls.py) for more details.
 
 ```bash
-sudo -- sh -c "echo 127.0.0.1 server1.clickhouse.test >> /etc/hosts"
+sudo -- sh -c "echo 127.0.0.1 server1.datastore.test >> /etc/hosts"
 ```
 
 ### PyCharm setup
@@ -70,20 +70,20 @@ Go to Settings -> Project (datastore-connect) -> Project structure, right click 
 
 ## Testing
 
-### Start ClickHouse in Docker
+### Start Datastore in Docker
 
-The tests will require two ClickHouse instances to be running. 
+The tests will require two Datastore instances to be running. 
 One should have a default plain authentication (for integration tests), and the other should have a TLS configuration (for tls tests only).
 
-The integration tests will start and stop the ClickHouse instance automatically. 
+The integration tests will start and stop the Datastore instance automatically. 
 However, this adds a few seconds to each run, and this might not be ideal when you run a single test (using PyCharm, for example). 
-To disable this behavior, set the `CLICKHOUSE_CONNECT_TEST_DOCKER` environment variable to `0`.
+To disable this behavior, set the `DATASTORE_CONNECT_TEST_DOCKER` environment variable to `0`.
 
 ```bash
-export CLICKHOUSE_CONNECT_TEST_DOCKER=0
+export DATASTORE_CONNECT_TEST_DOCKER=0
 ```
 
-The easiest way to start all the required ClickHouse instances is to use the provided Docker Compose file (the integrations tests [setup script](tests/integration_tests/conftest.py) uses the same file).
+The easiest way to start all the required Datastore instances is to use the provided Docker Compose file (the integrations tests [setup script](tests/integration_tests/conftest.py) uses the same file).
 
 ```bash
 docker compose up -d
@@ -112,22 +112,22 @@ pytest tests/integration_tests
 
 ### Run the TLS integration tests
 
-These tests require the `CLICKHOUSE_CONNECT_TEST_TLS` environment variable to be set to `1`; otherwise, they will be skipped. 
-Additionally, the TLS ClickHouse instance should be running (see [docker-compose.yml](docker-compose.yml)).
+These tests require the `DATASTORE_CONNECT_TEST_TLS` environment variable to be set to `1`; otherwise, they will be skipped. 
+Additionally, the TLS Datastore instance should be running (see [docker-compose.yml](docker-compose.yml)).
 
 ```bash
-CLICKHOUSE_CONNECT_TEST_TLS=1 pytest tests/tls
+DATASTORE_CONNECT_TEST_TLS=1 pytest tests/tls
 ```
 
-### Running the integration tests with ClickHouse Cloud
+### Running the integration tests with Datastore Cloud
 
-If you want to run the tests using your ClickHouse Cloud instance instead of the local ClickHouse instance running in Docker, you will need a few additional environment variables.
+If you want to run the tests using your Datastore Cloud instance instead of the local Datastore instance running in Docker, you will need a few additional environment variables.
 
 ```bash
-export CLICKHOUSE_CONNECT_TEST_CLOUD=1
-export CLICKHOUSE_CONNECT_TEST_PORT=8443
-export CLICKHOUSE_CONNECT_TEST_HOST='instance.clickhouse.cloud'
-export CLICKHOUSE_CONNECT_TEST_PASSWORD='secret'
+export DATASTORE_CONNECT_TEST_CLOUD=1
+export DATASTORE_CONNECT_TEST_PORT=8443
+export DATASTORE_CONNECT_TEST_HOST='instance.datastore.cloud'
+export DATASTORE_CONNECT_TEST_PASSWORD='secret'
 ```
 
 Then, you should be able to run the tests as usual:

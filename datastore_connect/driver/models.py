@@ -5,7 +5,7 @@ from datastore_connect.datatypes.registry import get_from_name
 
 class ColumnDef(NamedTuple):
     """
-    ClickHouse column definition from DESCRIBE TABLE command
+    Datastore column definition from DESCRIBE TABLE command
     """
     name: str
     type: str
@@ -26,7 +26,7 @@ class ColumnDef(NamedTuple):
 
 class SettingDef(NamedTuple):
     """
-    ClickHouse setting definition from system.settings table
+    Datastore setting definition from system.settings table
     """
     name: str
     value: str
@@ -35,7 +35,7 @@ class SettingDef(NamedTuple):
 
 class SettingStatus(NamedTuple):
     """
-    Get the setting "status" from a ClickHouse server setting
+    Get the setting "status" from a Datastore server setting
     """
     is_set: bool
     is_writable: bool

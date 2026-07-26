@@ -6,7 +6,7 @@ from typing import Sequence, Union, Type
 import math
 import pytz
 
-from datastore_connect.datatypes.base import ClickHouseType
+from datastore_connect.datatypes.base import DatastoreType
 from datastore_connect.datatypes.registry import get_from_name
 from datastore_connect.tools.datagen import random_col_data, random_ascii_str, RandomValueDef
 from datastore_connect.driver.insert import InsertContext
@@ -123,7 +123,7 @@ def random_columns(cnt: int = 16, col_prefix: str = 'col'):
     return tuple(col_names), tuple(col_types)
 
 
-def random_data(col_types: Sequence[ClickHouseType],
+def random_data(col_types: Sequence[DatastoreType],
                 num_rows: int = 1,
                 server_tz: pytz.tzinfo = pytz.UTC):
     col_def = RandomValueDef(server_tz)

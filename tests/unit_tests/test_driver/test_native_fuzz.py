@@ -10,13 +10,13 @@ from tests.helpers import random_columns, random_data, native_transform, native_
 TEST_COLUMNS = 12
 MAX_DATA_ROWS = 100
 
-use_c = coerce_bool(os.environ.get('CLICKHOUSE_CONNECT_USE_C', True))
+use_c = coerce_bool(os.environ.get('DATASTORE_CONNECT_USE_C', True))
 BuffCls = CBuff if use_c else PyBuff
 
 
 # pylint: disable=duplicate-code
 def test_native_round_trips():
-    test_runs = int(os.environ.get('CLICKHOUSE_CONNECT_TEST_FUZZ', '200'))
+    test_runs = int(os.environ.get('DATASTORE_CONNECT_TEST_FUZZ', '200'))
 
     for _ in range(test_runs):
         data_rows = random.randint(1, MAX_DATA_ROWS)
@@ -36,7 +36,7 @@ def test_native_round_trips():
 
 
 def test_native_small():
-    test_runs = int(os.environ.get('CLICKHOUSE_CONNECT_TEST_FUZZ', '200'))
+    test_runs = int(os.environ.get('DATASTORE_CONNECT_TEST_FUZZ', '200'))
     for _ in range(test_runs):
         col_names, col_types = random_columns(1)
         data = random_data(col_types, 2)

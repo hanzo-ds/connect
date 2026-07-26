@@ -90,7 +90,7 @@ class Decimal(ChSqlaType, Numeric):
         Construct either with precision and scale (for DDL), or a TypeDef with those values (by name)
         :param precision:  Number of digits the Decimal
         :param scale: Digits after the decimal point
-        :param type_def: Parsed type def from ClickHouse arguments
+        :param type_def: Parsed type def from Datastore arguments
         """
         if type_def:
             if self.dec_size:
@@ -99,7 +99,7 @@ class Decimal(ChSqlaType, Numeric):
             else:
                 precision, scale = type_def.values
         elif not precision or scale < 0 or scale > precision:
-            raise ArgumentError('Invalid precision or scale for ClickHouse Decimal type')
+            raise ArgumentError('Invalid precision or scale for Datastore Decimal type')
         else:
             type_def = TypeDef(values=(precision, scale))
         ChSqlaType.__init__(self, type_def)
@@ -130,7 +130,7 @@ class Enum(ChSqlaType, UserDefinedType):
     def __init__(self, enum: Type[PyEnum] = None, keys: Sequence[str] = None, values: Sequence[int] = None,
                  type_def: TypeDef = None):
         """
-        Construct a ClickHouse enum either from a Python Enum or parallel lists of keys and value.  Note that
+        Construct a Datastore enum either from a Python Enum or parallel lists of keys and value.  Note that
         Python enums do not support empty strings as keys, so the alternate keys/values must be used in that case
         :param enum: Python enum to convert
         :param keys: List of string keys
@@ -154,15 +154,15 @@ class Enum(ChSqlaType, UserDefinedType):
     def _validate(cls, keys: Sequence, values: Sequence):
         bad_key = next((x for x in keys if not isinstance(x, str)), None)
         if bad_key:
-            raise ArgumentError(f'ClickHouse enum key {bad_key} is not a string')
+            raise ArgumentError(f'Datastore enum key {bad_key} is not a string')
         bad_value = next((x for x in values if not isinstance(x, int)), None)
         if bad_value:
-            raise ArgumentError(f'ClickHouse enum value {bad_value} is not an integer')
+            raise ArgumentError(f'Datastore enum value {bad_value} is not an integer')
         value_min = -(2 ** (cls._size - 1))
         value_max = 2 ** (cls._size - 1) - 1
         bad_value = next((x for x in values if x < value_min or x > value_max), None)
         if bad_value:
-            raise ArgumentError(f'Clickhouse enum value {bad_value} is out of range')
+            raise ArgumentError(f'Datastore enum value {bad_value} is out of range')
 
 
 class Enum8(Enum):
@@ -237,7 +237,7 @@ class Date32(ChSqlaType, SqlaDate):
 class DateTime(ChSqlaType, SqlaDateTime):
     def __init__(self, tz: str = None, type_def: TypeDef = None):
         """
-        Date time constructor with optional ClickHouse timezone parameter if not constructed with TypeDef
+        Date time constructor with optional Datastore timezone parameter if not constructed with TypeDef
         :param tz: Timezone string as defined in pytz
         :param type_def: TypeDef from parse_name function
         """
@@ -255,7 +255,7 @@ class DateTime64(ChSqlaType, SqlaDateTime):
     def __init__(self, precision: int = None, tz: str = None, type_def: TypeDef = None):
         """
         Date time constructor with precision and timezone parameters if not constructed with TypeDef
-        :param precision:   Usually 3/6/9 for mill/micro/nanosecond precision on ClickHouse side
+        :param precision:   Usually 3/6/9 for mill/micro/nanosecond precision on Datastore side
         :param tz: Timezone string as defined in pytz
         :param type_def: TypeDef from parse_name function
         """
@@ -267,7 +267,7 @@ class DateTime64(ChSqlaType, SqlaDateTime):
                 type_def = TypeDef(values=(precision,))
         prec = type_def.values[0] if len(type_def.values) else None
         if not isinstance(prec, int) or prec < 0 or prec > 9:
-            raise ArgumentError(f'Invalid precision value {prec} for ClickHouse DateTime64')
+            raise ArgumentError(f'Invalid precision value {prec} for Datastore DateTime64')
         ChSqlaType.__init__(self, type_def)
         SqlaDateTime.__init__(self)
 

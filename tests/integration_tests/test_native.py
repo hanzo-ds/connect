@@ -59,7 +59,7 @@ def test_nulls(test_client: Client, table_context: Callable):
 
 
 def test_old_json(test_client: Client, table_context: Callable):
-    if not coerce_bool(os.environ.get('CLICKHOUSE_CONNECT_TEST_OLD_JSON_TYPE')):
+    if not coerce_bool(os.environ.get('DATASTORE_CONNECT_TEST_OLD_JSON_TYPE')):
         pytest.skip('Deprecated JSON type not tested')
     with table_context('old_json_test', [
         'key Int32',

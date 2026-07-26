@@ -203,7 +203,7 @@ def test_pandas_datetime64(test_client: Client, table_context: Callable):
 def test_pandas_streams(test_client: Client):
     if not test_client.min_version('22'):
         pytest.skip(f'generateRandom is not supported in this server version {test_client.server_version}')
-    runs = os.environ.get('CLICKHOUSE_CONNECT_TEST_FUZZ', '250')
+    runs = os.environ.get('DATASTORE_CONNECT_TEST_FUZZ', '250')
     for _ in range(int(runs) // 2):
         query_rows = random.randint(0, 5000) + 20000
         stream_count = 0
@@ -281,7 +281,7 @@ def test_pandas_null_strings(test_client: Client, table_context:Callable):
 
 def test_pandas_small_blocks(test_config: TestConfig, test_client: Client):
     if test_config.cloud:
-        pytest.skip('Skipping performance test in ClickHouse Cloud')
+        pytest.skip('Skipping performance test in Datastore Cloud')
     res = test_client.query_df('SELECT number, randomString(512) FROM numbers(1000000)',
                                settings={'max_block_size': 250})
     assert len(res) == 1000000

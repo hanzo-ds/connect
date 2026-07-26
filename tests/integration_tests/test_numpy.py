@@ -141,7 +141,7 @@ def test_numpy_bigint_object(test_client: Client, table_context: Callable):
 def test_numpy_streams(test_client: Client):
     if not test_client.min_version('22'):
         pytest.skip(f'generateRandom is not supported in this server version {test_client.server_version}')
-    runs = os.environ.get('CLICKHOUSE_CONNECT_TEST_FUZZ', '250')
+    runs = os.environ.get('DATASTORE_CONNECT_TEST_FUZZ', '250')
     for _ in range(int(runs) // 2):
         query_rows = random.randint(0, 5000) + 20000
         stream_count = 0

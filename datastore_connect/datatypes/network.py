@@ -2,7 +2,7 @@ import socket
 from ipaddress import IPv4Address, IPv6Address
 from typing import Union, MutableSequence, Sequence, Any
 
-from datastore_connect.datatypes.base import ClickHouseType
+from datastore_connect.datatypes.base import DatastoreType
 from datastore_connect.driver.common import write_array, int_size, first_value
 from datastore_connect.driver.insert import InsertContext
 from datastore_connect.driver.query import QueryContext
@@ -14,7 +14,7 @@ V6_NULL = bytes(b'\x00' * 16)
 
 
 # pylint: disable=protected-access
-class IPv4(ClickHouseType):
+class IPv4(DatastoreType):
     _array_type = 'L' if int_size == 2 else 'I'
     valid_formats = 'string', 'native', 'int'
     python_type = IPv4Address
@@ -53,7 +53,7 @@ class IPv4(ClickHouseType):
 
 
 # pylint: disable=protected-access
-class IPv6(ClickHouseType):
+class IPv6(DatastoreType):
     valid_formats = 'string', 'native'
     python_type = IPv6Address
     byte_size = 16

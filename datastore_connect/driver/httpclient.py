@@ -14,7 +14,7 @@ from urllib3.response import HTTPResponse
 
 from datastore_connect import common
 from datastore_connect.datatypes import registry
-from datastore_connect.datatypes.base import ClickHouseType
+from datastore_connect.datatypes.base import DatastoreType
 from datastore_connect.driver.client import Client
 from datastore_connect.driver.common import dict_copy, coerce_bool, coerce_int, dict_add
 from datastore_connect.driver.compression import available_compression
@@ -31,7 +31,7 @@ from datastore_connect.driver.transform import NativeTransform
 
 logger = logging.getLogger(__name__)
 columns_only_re = re.compile(r'LIMIT 0\s*$', re.IGNORECASE)
-ex_header = 'X-ClickHouse-Exception-Code'
+ex_header = 'X-Datastore-Exception-Code'
 
 
 # pylint: disable=too-many-instance-attributes
@@ -72,12 +72,12 @@ class HttpClient(Client):
                  https_proxy: Optional[str] = None,
                  server_host_name: Optional[str] = None,
                  apply_server_timezone: Optional[Union[str, bool]] = None,
-                 show_clickhouse_errors: Optional[bool] = None,
+                 show_datastore_errors: Optional[bool] = None,
                  autogenerate_session_id: Optional[bool] = None,
                  tls_mode: Optional[str] = None,
                  proxy_path: str = ''):
         """
-        Create an HTTP ClickHouse Connect client
+        Create an HTTP Datastore Connect client
         See datastore_connect.get_client for parameters
         """
         proxy_path = proxy_path.lstrip('/')
@@ -98,8 +98,8 @@ class HttpClient(Client):
             if client_cert and (tls_mode is None or tls_mode == 'mutual'):
                 if not username:
                     raise ProgrammingError('username parameter is required for Mutual TLS authentication')
-                self.headers['X-ClickHouse-User'] = username
-                self.headers['X-ClickHouse-SSL-Certificate-Auth'] = 'on'
+                self.headers['X-Datastore-User'] = username
+                self.headers['X-Datastore-SSL-Certificate-Auth'] = 'on'
             # pylint: disable=too-many-boolean-expressions
             if not self.http and (server_host_name or ca_cert or client_cert or not verify or https_proxy):
                 options = {'verify': verify}
@@ -168,7 +168,7 @@ class HttpClient(Client):
                          query_retries=query_retries,
                          server_host_name=server_host_name,
                          apply_server_timezone=apply_server_timezone,
-                         show_clickhouse_errors=show_clickhouse_errors)
+                         show_datastore_errors=show_datastore_errors)
         self.params = dict_copy(self.params, self._validate_settings(ch_settings))
         comp_setting = self._setting_status('enable_http_compression')
         self._send_comp_setting = not comp_setting.is_set and comp_setting.is_writable
@@ -217,10 +217,10 @@ class HttpClient(Client):
             response = self._raw_request(f'{context.final_query}\n FORMAT JSON',
                                          params, headers, retries=self.query_retries)
             json_result = json.loads(response.data)
-            # ClickHouse will respond with a JSON object of meta, data, and some other objects
+            # Datastore will respond with a JSON object of meta, data, and some other objects
             # We just grab the column names and column types from the metadata sub object
             names: List[str] = []
-            types: List[ClickHouseType] = []
+            types: List[DatastoreType] = []
             for col in json_result['meta']:
                 names.append(col['name'])
                 types.append(registry.get_from_name(col['type']))
@@ -248,7 +248,7 @@ class HttpClient(Client):
                                      fields=fields,
                                      server_wait=not context.streaming)
         byte_source = RespBuffCls(ResponseSource(response))  # pylint: disable=not-callable
-        context.set_response_tz(self._check_tz_change(response.headers.get('X-ClickHouse-Timezone')))
+        context.set_response_tz(self._check_tz_change(response.headers.get('X-Datastore-Timezone')))
         query_result = self._transform.parse_response(byte_source, context)
         query_result.summary = self._summary(response)
         return query_result
@@ -320,12 +320,12 @@ class HttpClient(Client):
     @staticmethod
     def _summary(response: HTTPResponse):
         summary = {}
-        if 'X-ClickHouse-Summary' in response.headers:
+        if 'X-Datastore-Summary' in response.headers:
             try:
-                summary = json.loads(response.headers['X-ClickHouse-Summary'])
+                summary = json.loads(response.headers['X-Datastore-Summary'])
             except json.JSONDecodeError:
                 pass
-        summary['query_id'] = response.headers.get('X-ClickHouse-Query-Id', '')
+        summary['query_id'] = response.headers.get('X-Datastore-Query-Id', '')
         return summary
 
     def command(self,
@@ -380,7 +380,7 @@ class HttpClient(Client):
         return QuerySummary(self._summary(response))
 
     def _error_handler(self, response: HTTPResponse, retried: bool = False) -> None:
-        if self.show_clickhouse_errors:
+        if self.show_datastore_errors:
             try:
                 err_content = get_response_data(response)
             except Exception:  # pylint: disable=broad-except
@@ -391,13 +391,13 @@ class HttpClient(Client):
             err_str = f'HTTPDriver for {self.url} returned response code {response.status}'
             err_code = response.headers.get(ex_header)
             if err_code:
-                err_str = f'HTTPDriver for {self.url} received ClickHouse error code {err_code}'
+                err_str = f'HTTPDriver for {self.url} received Datastore error code {err_code}'
             if err_content:
                 err_msg = common.format_error(err_content.decode(errors='backslashreplace'))
                 if err_msg.startswith('Code'):
                     err_str = f'{err_str}\n {err_msg}'
         else:
-            err_str = 'The ClickHouse server returned an error.'
+            err_str = 'The Datastore server returned an error.'
 
         raise OperationalError(err_str) if retried else DatabaseError(err_str) from None
 
@@ -418,7 +418,7 @@ class HttpClient(Client):
         final_params = {}
         if server_wait:
             final_params['wait_end_of_query'] = '1'
-        # We can't actually read the progress headers, but we enable them so ClickHouse sends something
+        # We can't actually read the progress headers, but we enable them so Datastore sends something
         # to keep the connection alive when waiting for long-running queries and (2) to get summary information
         # if not streaming
         if self._send_progress:
@@ -457,14 +457,14 @@ class HttpClient(Client):
             except HTTPError as ex:
                 if isinstance(ex.__context__, ConnectionResetError):
                     # The server closed the connection, probably because the Keep Alive has expired
-                    # We should be safe to retry, as ClickHouse should not have processed anything on a connection
+                    # We should be safe to retry, as Datastore should not have processed anything on a connection
                     # that it killed.  We also only retry this once, as multiple disconnects are unlikely to be
                     # related to the Keep Alive settings
                     if attempts == 1:
                         logger.debug('Retrying remotely closed connection')
                         continue
                 logger.warning('Unexpected Http Driver Exception')
-                err_url = f' ({self.url})' if self.show_clickhouse_errors else ''
+                err_url = f' ({self.url})' if self.show_datastore_errors else ''
                 raise OperationalError(f'Error {ex} executing HTTP request attempt {attempts}{err_url}') from ex
             finally:
                 if query_session:

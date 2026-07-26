@@ -3,7 +3,7 @@
 # pylint: disable=import-error,no-name-in-module
 import time
 import random
-import clickhouse_driver
+import datastore_driver
 
 import datastore_connect
 from datastore_connect.tools.testing import TableContext
@@ -18,7 +18,7 @@ inserts = [{'query': 'SELECT trip_id, pickup, dropoff, pickup_longitude, ' +
 
 excluded = {}
 cc_client = datastore_connect.get_client(compress=False)
-cd_client = clickhouse_driver.Client(host='localhost')
+cd_client = datastore_driver.Client(host='localhost')
 run_id = random.randint(0, 10000000)
 
 
@@ -43,7 +43,7 @@ def write_python_rows(ix, insert):
 
 
 def dr_write_python_columns(ix, insert):
-    print('\n\tclickhouse-driver Python Insert (column oriented):')
+    print('\n\tdatastore-driver Python Insert (column oriented):')
     data = cd_client.execute(insert['query'], columnar=True)
     table = f'perf_test_insert_{run_id}_{ix}'
     with test_ctx(table, insert) as ctx:
@@ -54,7 +54,7 @@ def dr_write_python_columns(ix, insert):
 
 
 def dr_write_python_rows(ix, insert):
-    print('\n\tclickhouse-driver Python Insert (row oriented):')
+    print('\n\tdatastore-driver Python Insert (row oriented):')
     data = cd_client.execute(insert['query'], columnar=False)
     table = f'perf_test_insert_{run_id}_{ix}'
     with test_ctx(table, insert) as ctx:

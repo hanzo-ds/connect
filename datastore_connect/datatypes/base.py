@@ -21,7 +21,7 @@ ch_write_formats = {}
 
 class TypeDef(NamedTuple):
     """
-    Immutable tuple that contains all additional information needed to construct a particular ClickHouseType
+    Immutable tuple that contains all additional information needed to construct a particular DatastoreType
     """
     wrappers: tuple = ()
     keys: tuple = ()
@@ -32,9 +32,9 @@ class TypeDef(NamedTuple):
         return f"({', '.join(str(v) for v in self.values)})" if self.values else ''
 
 
-class ClickHouseType(ABC):
+class DatastoreType(ABC):
     """
-    Base class for all ClickHouseType objects.
+    Base class for all DatastoreType objects.
     """
     __slots__ = 'nullable', 'low_card', 'wrappers', 'type_def', '__dict__'
     _name_suffix = ''
@@ -53,11 +53,11 @@ class ClickHouseType(ABC):
             type_map[cls.base_type] = cls
 
     @classmethod
-    def build(cls: Type['ClickHouseType'], type_def: TypeDef):
+    def build(cls: Type['DatastoreType'], type_def: TypeDef):
         return cls(type_def)
 
     @classmethod
-    def _active_format(cls, fmt_map: Dict[Type['ClickHouseType'], str], ctx: BaseQueryContext):
+    def _active_format(cls, fmt_map: Dict[Type['DatastoreType'], str], ctx: BaseQueryContext):
         ctx_fmt = ctx.active_fmt(cls.base_type)
         if ctx_fmt:
             return ctx_fmt
@@ -74,7 +74,7 @@ class ClickHouseType(ABC):
     def __init__(self, type_def: TypeDef):
         """
         Base class constructor that sets Nullable and LowCardinality wrappers
-        :param type_def:  ClickHouseType base configuration parameters
+        :param type_def:  DatastoreType base configuration parameters
         """
         self.type_def = type_def
         self.wrappers = type_def.wrappers
@@ -119,7 +119,7 @@ class ClickHouseType(ABC):
     def write_column_prefix(self, dest: bytearray):
         """
         Prefix is primarily used is for the LowCardinality version (but see the JSON data type).  Because of the
-        way the ClickHouse C++ code is written, this must be done before any data is written even if the
+        way the Datastore C++ code is written, this must be done before any data is written even if the
         LowCardinality column is within a container.  The only recognized low cardinality version is 1
         :param dest: The native protocol binary write buffer
         """
@@ -142,7 +142,7 @@ class ClickHouseType(ABC):
 
     def read_column(self, source: ByteSource, num_rows: int, ctx: QueryContext) -> Sequence:
         """
-        Wrapping read method for all ClickHouseType data types.  Only overridden for container classes so that
+        Wrapping read method for all DatastoreType data types.  Only overridden for container classes so that
          the LowCardinality version is read for the contained types
         :param source: Native protocol binary read buffer
         :param num_rows: Number of rows expected in the column
@@ -154,7 +154,7 @@ class ClickHouseType(ABC):
 
     def read_column_data(self, source: ByteSource, num_rows: int, ctx: QueryContext, read_state: Any) -> Sequence:
         """
-        Public read method for all ClickHouseType data type columns
+        Public read method for all DatastoreType data type columns
         :param source: Native protocol binary read buffer
         :param num_rows: Number of rows expected in the column
         :param ctx: QueryContext for query specific settings
@@ -184,7 +184,7 @@ class ClickHouseType(ABC):
                             _num_rows: int, _ctx: QueryContext,
                             _read_state: Any) -> Union[Sequence, MutableSequence]:
         """
-        Lowest level read method for ClickHouseType native data columns
+        Lowest level read method for DatastoreType native data columns
         :param _source: Native protocol binary read buffer
         :param _num_rows: Expected number of rows in the column
         :return: Decoded column plus updated read buffer
@@ -196,7 +196,7 @@ class ClickHouseType(ABC):
 
     def _write_column_binary(self, column: Union[Sequence, MutableSequence], dest: bytearray, ctx: InsertContext):
         """
-        Lowest level write method for ClickHouseType data columns
+        Lowest level write method for DatastoreType data columns
         :param column: Python data column
         :param dest: Native protocol write buffer
         :param ctx: Insert Context with insert specific settings
@@ -204,7 +204,7 @@ class ClickHouseType(ABC):
 
     def write_column(self, column: Sequence, dest: bytearray, ctx: InsertContext):
         """
-        Wrapping write method for ClickHouseTypes.  Only overridden for container types that so that
+        Wrapping write method for DatastoreTypes.  Only overridden for container types that so that
         the write_native_prefix is done at the right time for contained types
         :param column: Column/sequence of Python values to write
         :param dest: Native binary write buffer
@@ -215,7 +215,7 @@ class ClickHouseType(ABC):
 
     def write_column_data(self, column: Sequence, dest: bytearray, ctx: InsertContext):
         """
-        Public native write method for ClickHouseTypes.  Delegates the actual write to either the LowCardinality
+        Public native write method for DatastoreTypes.  Delegates the actual write to either the LowCardinality
         write method or the _write_native_binary method of the type
         :param column: Sequence of Python data
         :param dest: Native binary write buffer
@@ -295,13 +295,13 @@ class ClickHouseType(ABC):
 EMPTY_TYPE_DEF = TypeDef()
 NULLABLE_TYPE_DEF = TypeDef(wrappers=('Nullable',))
 LC_TYPE_DEF = TypeDef(wrappers=('LowCardinality',))
-type_map: Dict[str, Type[ClickHouseType]] = {}
+type_map: Dict[str, Type[DatastoreType]] = {}
 
 
-class ArrayType(ClickHouseType, ABC, registered=False):
+class ArrayType(DatastoreType, ABC, registered=False):
     """
-    ClickHouse type that utilizes Python or Numpy arrays for fast reads and writes of binary data.
-    arrays can only be used for ClickHouse types that can be translated into UInt64 (and smaller) integers
+    Datastore type that utilizes Python or Numpy arrays for fast reads and writes of binary data.
+    arrays can only be used for Datastore types that can be translated into UInt64 (and smaller) integers
     or Float32/64
     """
     _signed = True
@@ -353,9 +353,9 @@ class ArrayType(ClickHouseType, ABC, registered=False):
         return 0
 
 
-class UnsupportedType(ClickHouseType, ABC, registered=False):
+class UnsupportedType(DatastoreType, ABC, registered=False):
     """
-    Base class for ClickHouse types that can't be serialized/deserialized into Python types.
+    Base class for Datastore types that can't be serialized/deserialized into Python types.
     Mostly useful just for DDL statements
     """
     def __init__(self, type_def: TypeDef):

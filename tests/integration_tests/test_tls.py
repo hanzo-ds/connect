@@ -8,13 +8,13 @@ from datastore_connect.driver.common import coerce_bool
 from datastore_connect.driver.exceptions import OperationalError
 from tests.helpers import PROJECT_ROOT_DIR
 
-# See .docker/clickhouse/single_node_tls for the server configuration
-cert_dir = f'{PROJECT_ROOT_DIR}/.docker/clickhouse/single_node_tls/certificates/'
-host = 'server1.clickhouse.test'
+# See .docker/datastore/single_node_tls for the server configuration
+cert_dir = f'{PROJECT_ROOT_DIR}/.docker/datastore/single_node_tls/certificates/'
+host = 'server1.datastore.test'
 
 
 def test_basic_tls():
-    if not coerce_bool(os.environ.get('CLICKHOUSE_CONNECT_TEST_TLS', 'False')):
+    if not coerce_bool(os.environ.get('DATASTORE_CONNECT_TEST_TLS', 'False')):
         pytest.skip('TLS tests not enabled')
     client = get_client(interface='https', host=host, port=10843, verify=False)
     assert client.command("SELECT 'insecure'") == 'insecure'
@@ -39,7 +39,7 @@ def test_basic_tls():
 
 
 def test_mutual_tls():
-    if not coerce_bool(os.environ.get('CLICKHOUSE_CONNECT_TEST_TLS', 'False')):
+    if not coerce_bool(os.environ.get('DATASTORE_CONNECT_TEST_TLS', 'False')):
         pytest.skip('TLS tests not enabled')
     client = get_client(interface='https',
                         username='cert_user',

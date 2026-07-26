@@ -14,9 +14,9 @@ class CreateDatabase(DDL):
                  replica_name: str = '{replica}'):
         """
         :param name: Database name
-        :param engine: Database ClickHouse engine type
-        :param zoo_path: ClickHouse zookeeper path for Replicated database engine
-        :param shard_name: Clickhouse shard name for Replicated database engine
+        :param engine: Database Datastore engine type
+        :param zoo_path: Datastore zookeeper path for Replicated database engine
+        :param shard_name: Datastore shard name for Replicated database engine
         :param replica_name: Replica name for Replicated database engine
         """
         if engine and engine not in ('Ordinary', 'Atomic', 'Lazy', 'Replicated'):

@@ -12,7 +12,7 @@ except ImportError:
 
 # Set the local timezone for DateTime conversions.  Note in most cases we want to use either UTC or the server
 # timezone, but if someone insists on using the local timezone we will try to convert.  The problem is we
-# never have anything but an epoch timestamp returned from ClickHouse, so attempts to convert times when the
+# never have anything but an epoch timestamp returned from Datastore, so attempts to convert times when the
 # local timezone is "DST" aware (like 'CEST' vs 'CET') will be wrong approximately half the time
 local_tz: pytz.timezone
 local_tz_dst_safe: bool = False

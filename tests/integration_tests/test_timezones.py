@@ -34,8 +34,8 @@ def test_basic_timezones(test_client: Client):
 
 
 def test_server_timezone(test_client: Client):
-    #  This test is really for manual testing since changing the timezone on the test ClickHouse server
-    #  still requires a restart.  Other tests will depend on https://github.com/ClickHouse/ClickHouse/pull/44149
+    #  This test is really for manual testing since changing the timezone on the test Datastore server
+    #  still requires a restart.  Other tests will depend on https://github.com/Datastore/Datastore/pull/44149
     test_client.apply_server_timezone = True
     test_datetime = datetime(2023, 3, 18, 16, 4, 25)
     try:

@@ -2,11 +2,11 @@
 
 """
 This script is for simple timed comparisons of various queries between formats (streaming vs batch, pandas vs Python
-native types) based on data loaded into a local clickhouse instance from some ClickHouse Sample Datasets
-https://clickhouse.com/docs/en/getting-started/example-datasets/
+native types) based on data loaded into a local datastore instance from some Datastore Sample Datasets
+https://docs.hanzo.ai/datastore/en/getting-started/example-datasets/
 
-It includes some basic comparisons with clickhouse-driver.  The clickhouse-driver import and client can be
-commented out if clickhouse-driver is not installed
+It includes some basic comparisons with datastore-driver.  The datastore-driver import and client can be
+commented out if datastore-driver is not installed
 
 Uncomment the queries and formats to measure before running.
 
@@ -14,7 +14,7 @@ This script is not intended to be rigorous or scientific.  For entertainment pur
 """
 
 import time
-import clickhouse_driver  # pylint: disable=import-error
+import datastore_driver  # pylint: disable=import-error
 import datastore_connect
 
 
@@ -25,7 +25,7 @@ queries = [#'SELECT trip_id, pickup, dropoff, pickup_longitude, pickup_latitude 
            ]
 
 cc_client = datastore_connect.get_client(compress=False)
-cd_client = clickhouse_driver.Client(host='localhost')
+cd_client = datastore_driver.Client(host='localhost')
 
 
 def read_python_columns(query):
@@ -63,21 +63,21 @@ def read_python_stream_rows(query):
 
 
 def read_numpy(query):
-    print('\n\tclickhouse connect Numpy Batch:')
+    print('\n\tdatastore connect Numpy Batch:')
     start = time.time()
     arr = cc_client.query_np(query, max_str_len=100)
     _print_result(start, len(arr))
 
 
 def read_pandas(query):
-    print('\n\tclickhouse connect Pandas Batch:')
+    print('\n\tdatastore connect Pandas Batch:')
     start = time.time()
     rows = len(cc_client.query_df(query))
     _print_result(start, rows)
 
 
 def read_arrow(query):
-    print('\n\tclickhouse connect Arrow:')
+    print('\n\tdatastore connect Arrow:')
     start = time.time()
     rows = len(cc_client.query_arrow(query))
     _print_result(start, rows)
@@ -94,21 +94,21 @@ def read_pandas_stream(query):
 
 
 def dr_read_python_columns(query):
-    print('\n\tclickhouse-driver Python Batch (column oriented):')
+    print('\n\tdatastore-driver Python Batch (column oriented):')
     start = time.time()
     result = cd_client.execute(query, columnar=True)
     _print_result(start, len(result[0]))
 
 
 def dr_read_python_rows(query):
-    print('\n\tclickhouse-driver Python Batch (row oriented):')
+    print('\n\tdatastore-driver Python Batch (row oriented):')
     start = time.time()
     result = cd_client.execute(query)
     _print_result(start, len(result))
 
 
 def dr_read_python_stream(query):
-    print('\n\tclickhouse-driver Python Stream:')
+    print('\n\tdatastore-driver Python Stream:')
     start = time.time()
     rows = 0
     for block in cd_client.execute_iter(query):
@@ -117,7 +117,7 @@ def dr_read_python_stream(query):
 
 
 def dr_read_pandas(query):
-    print('\n\tclickhouse-driver Pandas Batch:')
+    print('\n\tdatastore-driver Pandas Batch:')
     start = time.time()
     data_frame = cd_client.query_dataframe(query)
     _print_result(start, len(data_frame))

@@ -27,7 +27,7 @@ def tuple_expr(expr_name, value):
 
 class TableEngine(SchemaEventTarget, Visitable):
     """
-    SqlAlchemy Schema element to support ClickHouse table engines.  At the moment provides no real
+    SqlAlchemy Schema element to support Datastore table engines.  At the moment provides no real
     functionality other than the CREATE TABLE argument string
     """
     arg_names = ()
@@ -252,7 +252,7 @@ class SharedGraphiteMergeTree(GraphiteMergeTree):
 
 def build_engine(full_engine: str) -> Optional[TableEngine]:
     """
-    Factory function to create TableEngine class from ClickHouse full_engine expression
+    Factory function to create TableEngine class from Datastore full_engine expression
     :param full_engine
     :return: TableEngine DDL element
     """

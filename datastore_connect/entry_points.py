@@ -5,8 +5,8 @@ import sys
 
 from importlib.metadata import PackageNotFoundError, distribution
 
-EXPECTED_EPS = {'sqlalchemy.dialects:clickhousedb',
-                'sqlalchemy.dialects:clickhousedb.connect'}
+EXPECTED_EPS = {'sqlalchemy.dialects:datastoredb',
+                'sqlalchemy.dialects:datastoredb.connect'}
 
 
 def validate_entrypoints():
@@ -14,7 +14,7 @@ def validate_entrypoints():
     try:
         dist = distribution('datastore-connect')
     except PackageNotFoundError:
-        print ('\nClickHouse Connect package not found in this Python installation')
+        print ('\nDatastore Connect package not found in this Python installation')
         return -1
     print()
     for entry_point in dist.entry_points:

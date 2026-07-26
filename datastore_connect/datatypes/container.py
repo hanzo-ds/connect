@@ -7,14 +7,14 @@ from datastore_connect.driver.query import QueryContext
 from datastore_connect.driver.binding import quote_identifier
 from datastore_connect.driver.types import ByteSource
 from datastore_connect.json_impl import any_to_json
-from datastore_connect.datatypes.base import ClickHouseType, TypeDef
+from datastore_connect.datatypes.base import DatastoreType, TypeDef
 from datastore_connect.driver.common import must_swap, first_value
 from datastore_connect.datatypes.registry import get_from_name
 
 logger = logging.getLogger(__name__)
 
 
-class Array(ClickHouseType):
+class Array(DatastoreType):
     __slots__ = ('element_type', '_insert_name')
     python_type = list
 
@@ -90,7 +90,7 @@ class Array(ClickHouseType):
         final_type.write_column_data(column, dest, ctx)
 
 
-class Tuple(ClickHouseType):
+class Tuple(DatastoreType):
     _slots = 'element_names', 'element_types', '_insert_name'
     python_type = tuple
     valid_formats = 'tuple', 'dict', 'json', 'native'  # native is 'tuple' for unnamed tuples, and dict for named tuples
@@ -168,7 +168,7 @@ class Tuple(ClickHouseType):
         return col
 
 
-class Map(ClickHouseType):
+class Map(DatastoreType):
     _slots = 'key_type', 'value_type', '_insert_name'
     python_type = dict
 
@@ -233,7 +233,7 @@ class Map(ClickHouseType):
         self.value_type.write_column_data(values, dest, ctx)
 
 
-class Nested(ClickHouseType):
+class Nested(DatastoreType):
     __slots__ = 'tuple_array', 'element_names', 'element_types'
     python_type = Sequence[dict]
 

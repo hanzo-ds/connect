@@ -1,9 +1,9 @@
 services:
-  clickhouse:
-    image: 'clickhouse/clickhouse-server:${CLICKHOUSE_CONNECT_TEST_CH_VERSION-25.1-alpine}'
-    container_name: 'datastore-connect-clickhouse-server'
+  datastore:
+    image: 'datastore/datastore-server:${DATASTORE_CONNECT_TEST_CH_VERSION-25.1-alpine}'
+    container_name: 'datastore-connect-datastore-server'
     environment:
-      CLICKHOUSE_SKIP_USER_SETUP: 1
+      DATASTORE_SKIP_USER_SETUP: 1
     ports:
       - '8123:8123'
       - '9000:9000'
@@ -12,17 +12,17 @@ services:
         soft: 262144
         hard: 262144
     volumes:
-      - './.docker/clickhouse/single_node/config.xml:/etc/clickhouse-server/config.xml'
-      - './.docker/clickhouse/users.xml:/etc/clickhouse-server/users.xml'
-      - './.docker/clickhouse/single_node/docker_related_config.xml:/etc/clickhouse-server/config.d/docker_related_config.xml'
+      - './.docker/datastore/single_node/config.xml:/etc/datastore-server/config.xml'
+      - './.docker/datastore/users.xml:/etc/datastore-server/users.xml'
+      - './.docker/datastore/single_node/docker_related_config.xml:/etc/datastore-server/config.d/docker_related_config.xml'
 
-  clickhouse_tls:
+  datastore_tls:
     build:
       context: ./
-      dockerfile: .docker/clickhouse/single_node_tls/Dockerfile
-    container_name: 'datastore-connect-clickhouse-server-tls'
+      dockerfile: .docker/datastore/single_node_tls/Dockerfile
+    container_name: 'datastore-connect-datastore-server-tls'
     environment:
-      CLICKHOUSE_SKIP_USER_SETUP: 1
+      DATASTORE_SKIP_USER_SETUP: 1
     ports:
       - '10843:8443'
       - '10840:9440'
@@ -31,6 +31,6 @@ services:
         soft: 262144
         hard: 262144
     volumes:
-      - './.docker/clickhouse/single_node_tls/config.xml:/etc/clickhouse-server/config.xml'
-      - './.docker/clickhouse/single_node_tls/users.xml:/etc/clickhouse-server/users.xml'
-      - './.docker/clickhouse/single_node_tls/docker_related_config.xml:/etc/clickhouse-server/config.d/docker_related_config.xml'
+      - './.docker/datastore/single_node_tls/config.xml:/etc/datastore-server/config.xml'
+      - './.docker/datastore/single_node_tls/users.xml:/etc/datastore-server/users.xml'
+      - './.docker/datastore/single_node_tls/docker_related_config.xml:/etc/datastore-server/config.d/docker_related_config.xml'

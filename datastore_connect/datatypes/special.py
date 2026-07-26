@@ -1,7 +1,7 @@
 from typing import Union, Sequence, MutableSequence, Any
 from uuid import UUID as PYUUID
 
-from datastore_connect.datatypes.base import TypeDef, ClickHouseType, ArrayType, UnsupportedType
+from datastore_connect.datatypes.base import TypeDef, DatastoreType, ArrayType, UnsupportedType
 from datastore_connect.datatypes.registry import get_from_name
 from datastore_connect.driver.common import first_value
 from datastore_connect.driver.ctypes import data_conv
@@ -12,7 +12,7 @@ from datastore_connect.driver.types import ByteSource
 empty_uuid_b = bytes(b'\x00' * 16)
 
 
-class UUID(ClickHouseType):
+class UUID(DatastoreType):
     valid_formats = 'string', 'native'
     np_type = 'U36'
     byte_size = 16
@@ -81,12 +81,12 @@ class Nothing(ArrayType):
         dest += bytes(0x30 for _ in range(len(column)))
 
 
-class SimpleAggregateFunction(ClickHouseType):
+class SimpleAggregateFunction(DatastoreType):
     _slots = ('element_type',)
 
     def __init__(self, type_def: TypeDef):
         super().__init__(type_def)
-        self.element_type: ClickHouseType = get_from_name(type_def.values[1])
+        self.element_type: DatastoreType = get_from_name(type_def.values[1])
         self._name_suffix = type_def.arg_str
         self.byte_size = self.element_type.byte_size
 

@@ -10,7 +10,7 @@ from datastore_connect.driver.options import np, pd, pd_time_test
 from datastore_connect.driver.exceptions import ProgrammingError, DataError
 
 if TYPE_CHECKING:
-    from datastore_connect.datatypes.base import ClickHouseType
+    from datastore_connect.datatypes.base import DatastoreType
 
 logger = logging.getLogger(__name__)
 DEFAULT_BLOCK_BYTES = 1 << 21   # Try to generate blocks between 1MB and 2MB in raw size
@@ -21,7 +21,7 @@ class InsertBlock(NamedTuple):
     column_count: int
     row_count: int
     column_names: Iterable[str]
-    column_types: Iterable['ClickHouseType']
+    column_types: Iterable['DatastoreType']
     column_data: Iterable[Sequence[Any]]
 
 
@@ -35,7 +35,7 @@ class InsertContext(BaseQueryContext):
     def __init__(self,
                  table: str,
                  column_names: Sequence[str],
-                 column_types: Sequence['ClickHouseType'],
+                 column_types: Sequence['DatastoreType'],
                  data: Any = None,
                  column_oriented: Optional[bool] = None,
                  settings: Optional[Dict[str, Any]] = None,

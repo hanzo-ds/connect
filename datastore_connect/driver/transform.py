@@ -52,7 +52,7 @@ class NativeTransform:
             except Exception as ex:
                 source.close()
                 if isinstance(ex, StreamCompleteException):
-                    # We ran out of data before it was expected, this could be ClickHouse reporting an error
+                    # We ran out of data before it was expected, this could be Datastore reporting an error
                     # in the response
                     if source.last_message:
                         raise StreamFailureError(extract_error_message(source.last_message)) from None
