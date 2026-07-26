@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 # We disable this warning.  Verify must be explicitly set to false, so we assume the user knows what they're doing
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# Increase this number just to be safe when ClickHouse is returning progress headers
+# Increase this number just to be safe when Datastore is returning progress headers
 http.client._MAXHEADERS = 10000  # pylint: disable=protected-access
 
 DEFAULT_KEEP_INTERVAL = 30

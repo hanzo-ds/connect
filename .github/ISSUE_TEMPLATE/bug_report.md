@@ -22,7 +22,7 @@ assignees: ''
 import datastore_connect
 ```
 
-### datastore-connect and/or ClickHouse server logs
+### datastore-connect and/or Datastore server logs
 
 ### Configuration
 #### Environment
@@ -31,9 +31,9 @@ import datastore_connect
 * Operating system:
 
 
-#### ClickHouse server
-* ClickHouse Server version:
-* ClickHouse Server non-default settings, if any:
+#### Datastore server
+* Datastore Server version:
+* Datastore Server non-default settings, if any:
 * `CREATE TABLE` statements for tables involved:
-* Sample data for these tables, use [clickhouse-obfuscator](https://github.com/ClickHouse/ClickHouse/blob/master/programs/obfuscator/Obfuscator.cpp#L42-L80) if necessary
+* Sample data for these tables, use [datastore-obfuscator](https://github.com/Datastore/Datastore/blob/master/programs/obfuscator/Obfuscator.cpp#L42-L80) if necessary
 

@@ -1,4 +1,4 @@
-# ClickHouse Connect ChangeLog
+# Datastore Connect ChangeLog
 
 ### WARNING -- Breaking change for AsyncClient close()
 The AsyncClient close() method is now async and should be called as an async function.
@@ -9,63 +9,63 @@ Python 3.8 was EOL on 2024-10-07.  It is no longer tested, and versions after 20
 missing dependencies in the build chain.
 
 ### WARNING -- JSON Incompatibility between versions 22.8 and 22.10
-The internal serialization format for experimental JSON was updated in ClickHouse version 24.10.  `datastore-connect`
+The internal serialization format for experimental JSON was updated in Datastore version 24.10.  `datastore-connect`
 will set the compatibility level on a global basis based on the last client created, so multiple clients using the
 library with mixed versions 22.8/22.9 and 22.10 and later versions will break.  If you need JSON support for mixed
 versions you must use different Python interpreters for each version.
 
 ### WARNING -- Impending Breaking Change - Server Settings in DSN
 When creating a DBAPI Connection method using the Connection constructor or a SQLAlchemy DSN, the library currently
-converts any unrecognized keyword argument/query parameter to a ClickHouse server setting. Starting in the next minor
+converts any unrecognized keyword argument/query parameter to a Datastore server setting. Starting in the next minor
 release (0.9.0), unrecognized arguments/keywords for these methods of creating a DBAPI connection will raise an exception
-instead of being passed as ClickHouse server settings. This is in conjunction with some refactoring in Client construction.
-The supported method of passing ClickHouse server settings is to prefix such arguments/query parameters with`ch_`.
+instead of being passed as Datastore server settings. This is in conjunction with some refactoring in Client construction.
+The supported method of passing Datastore server settings is to prefix such arguments/query parameters with`ch_`.
 
 ## 0.8.17, 2025-04-10
 
 ### Improvements
 - The parameter `transport_settings` has been added to the Client query and insert methods.  For the HTTP client (currently
 the only  option), this dictionary of string is directly translated into additional HTTP headers at a query level.  This can
-be used to provide additional proxy directives or other extra 'non-ClickHouse' information that is passed via headers.
+be used to provide additional proxy directives or other extra 'non-Datastore' information that is passed via headers.
 Thanks to [Paweł Szczur](https://github.com/orian) of PostHog for the original PR!
-- There was previously no way to add a path to the ClickHouse server host in cases where the ClickHouse server was
-behind a proxy that used path based routing (such as `https://big_proxy:8080/clickhouse).  The new `proxy_path`
-`get_client` argument can now be used to set that path.  Closes https://github.com/ClickHouse/datastore-connect/issues/486
+- There was previously no way to add a path to the Datastore server host in cases where the Datastore server was
+behind a proxy that used path based routing (such as `https://big_proxy:8080/datastore).  The new `proxy_path`
+`get_client` argument can now be used to set that path.  Closes https://github.com/Datastore/datastore-connect/issues/486
 
 ### Bug Fix
 - Version 0.8.16 introduced a bug where changing a Client setting value and then changing that setting value back to the
   original server value would fail to restore the original setting.  This has been fixed.  Closes
-  https://github.com/ClickHouse/datastore-connect/issues/487
+  https://github.com/Datastore/datastore-connect/issues/487
 
 ## 0.8.16, 2025-03-28
 ### Bug Fixes
 - Don't send a setting value if the setting is already correct according to the `system.settings` table. 
-Closes https://github.com/ClickHouse/datastore-connect/issues/469
+Closes https://github.com/Datastore/datastore-connect/issues/469
 - Ensure that the http `user_agent` header is in ascii.  Note this could lead to an incorrectly encoded `os_user` if the
-os_user is not an Ascii string.  Closes https://github.com/ClickHouse/datastore-connect/issues/484
+os_user is not an Ascii string.  Closes https://github.com/Datastore/datastore-connect/issues/484
 - Fix "cannot access local variable" exception where the http client encounters an unexpected streaming error.  Also
-log that unexpected streaming error to assist debugging.  Closes https://github.com/ClickHouse/datastore-connect/issues/483
+log that unexpected streaming error to assist debugging.  Closes https://github.com/Datastore/datastore-connect/issues/483
 - Check that arrow/pandas is installed when calling `query_df` and `query_arrow` and raise a more meaningful exception
-if the required library is absent.  Closes https://github.com/ClickHouse/datastore-connect/issues/477
+if the required library is absent.  Closes https://github.com/Datastore/datastore-connect/issues/477
 
 ### Improvements
 - Some typing hints have been corrected.  Thanks to [Avery Fischer](https://github.com/biggerfisch) for the PR!
-- The docker based tests have been fixed to work with security improvements in recent ClickHouse releases
+- The docker based tests have been fixed to work with security improvements in recent Datastore releases
 - Query string cleanup is now (in theory) microseconds faster.  Thanks to [Sviatoslav Bobryshev](https://github.com/sbobryshev)
 for the optimization
 
 ## 0.8.15, 2025-01-25
 ### Bug Fix
 - The async client was not shutting down its associated executor thread pool, result in a memory leak if multiple
-async clients were created.  Closes https://github.com/ClickHouse/datastore-connect/issues/424.  Note that the `close`
+async clients were created.  Closes https://github.com/Datastore/datastore-connect/issues/424.  Note that the `close`
 function for the async client is now async to cleanly close down the pool.  The recommended way to use an async client
-is now within an AsyncContext.  See the associated [PR](https://github.com/ClickHouse/datastore-connect/pull/457) for details.
-Thanks to ClickHouse core developer @pufit for the fix!  
+is now within an AsyncContext.  See the associated [PR](https://github.com/Datastore/datastore-connect/pull/457) for details.
+Thanks to Datastore core developer @pufit for the fix!  
 
 ## 0.8.14, 2025-01-13
 ### Bug Fix
 - Fix an edge case where a Pandas dataframe that contains _only_ Int64 (or smaller) values would cause an exception when
-inserting into a ClickHouse "big int" table of U/Int128/256.  Closes https://github.com/ClickHouse/datastore-connect/issues/452
+inserting into a Datastore "big int" table of U/Int128/256.  Closes https://github.com/Datastore/datastore-connect/issues/452
 
 ## 0.8.13, 2025-01-07
 ### Bug Fix
@@ -73,7 +73,7 @@ inserting into a ClickHouse "big int" table of U/Int128/256.  Closes https://git
 
 ## 0.8.12, 2025-01-06
 ### Improvement
-- Added support for JWT authentication (ClickHouse Cloud feature). 
+- Added support for JWT authentication (Datastore Cloud feature). 
 It can be set via the `access_token` client configuration option for both sync and async clients. 
 The token can also be updated via the `set_access_token` method in the existing client instance.
 NB: do not mix access token and username/password credentials in the configuration; 
@@ -87,49 +87,49 @@ Other string formats are not currently supported.  Thanks to [Nikita Reznikov](h
 
 ### Bug Fix
 - Correctly handled native format column prefixes and insert names for Variant/Dynamic/JSON.
-Fixes https://github.com/ClickHouse/datastore-connect/issues/441 and likely some other issues with experimental types Variant,Dynamic, and JSON.
+Fixes https://github.com/Datastore/datastore-connect/issues/441 and likely some other issues with experimental types Variant,Dynamic, and JSON.
 
 ## 0.8.10, 2024-12-14
 ### Bug Fixes
-- The experimental JSON type would break in some circumstances with ClickHouse server version 24.10 and later.  This has
-been fixed.  The fix is incompatible with ClickHouse version 24.8 and 24.9 however, so see the above WARNING about
+- The experimental JSON type would break in some circumstances with Datastore server version 24.10 and later.  This has
+been fixed.  The fix is incompatible with Datastore version 24.8 and 24.9 however, so see the above WARNING about
 mixing JSON types
-- Experimental JSON types within a Tuple was broken.  This has been fixed; however, the fix fails on ClickHouse server
-versions 24.8 and 24.9.  If you need Tuple(JSON) support, you must use ClickHouse server version 24.10 or later.
-Closes https://github.com/ClickHouse/datastore-connect/issues/436.
+- Experimental JSON types within a Tuple was broken.  This has been fixed; however, the fix fails on Datastore server
+versions 24.8 and 24.9.  If you need Tuple(JSON) support, you must use Datastore server version 24.10 or later.
+Closes https://github.com/Datastore/datastore-connect/issues/436.
 
 ## 0.8.9, 2024-12-02
 ### Bug Fix
-- Roll back some timezone changes that caused incorrect usage of "local time" objects for some ClickHouse queries.  Note that
+- Roll back some timezone changes that caused incorrect usage of "local time" objects for some Datastore queries.  Note that
 has deprecated "naive" timestamps; however converting everything to timezone aware objects (with the UTC timezone as appropriate)
 causes some numpy and possibly Pandas side effects.  Eventually naive datetime object support will be deprecated/eliminated,
-but it will take some time to ensure no breaking changes.  Fixes https://github.com/ClickHouse/datastore-connect/issues/433
+but it will take some time to ensure no breaking changes.  Fixes https://github.com/Datastore/datastore-connect/issues/433
 
 ## 0.8.8, 2024-11-27
 ### Improvement
 - Handle low level HTTP errors as "Stream Complete".  This provides better compatibility with the most recent
-ClickHouse version when the HTTP stream is abruptly closed after a server error.
+Datastore version when the HTTP stream is abruptly closed after a server error.
 
 ## 0.8.7, 2024-11-21
 ### Improvement
-- Added basic support for ClickHouse geometric types Ring, Polygon, MultiPolygon, LineString, and MultiLineString.
-Closes https://github.com/ClickHouse/datastore-connect/issues/427
+- Added basic support for Datastore geometric types Ring, Polygon, MultiPolygon, LineString, and MultiLineString.
+Closes https://github.com/Datastore/datastore-connect/issues/427
 
 ### Bug Fix
 - Settings/parameters from one Client will no longer leak into later client instantiations.  Fixes
-https://github.com/ClickHouse/datastore-connect/issues/426
+https://github.com/Datastore/datastore-connect/issues/426
 
 ## 0.8.6, 2024-11-01
 ### Bug Fixes
-- Correctly stream unchunked HTTP responses.  Fixes https://github.com/ClickHouse/datastore-connect/issues/417.
-- Don't use `wait_end_of_query` for any streaming requests.  Fixes https://github.com/ClickHouse/datastore-connect/issues/416
+- Correctly stream unchunked HTTP responses.  Fixes https://github.com/Datastore/datastore-connect/issues/417.
+- Don't use `wait_end_of_query` for any streaming requests.  Fixes https://github.com/Datastore/datastore-connect/issues/416
 
 ## 0.8.5, 2024-10-24
 ### Bug fix
 - Inserts into a Nullable integer/float column could throw an exception if the first value was `None` and the column
 required conversion to the numeric type (such as Python str to float).  This has been fixed.  Note that "mixed" Python
 types in an insert data set will still throw an exception (i.e., Python strings and ints should not be combined into
-the same column for insert.  Closes https://github.com/ClickHouse/datastore-connect/issues/414
+the same column for insert.  Closes https://github.com/Datastore/datastore-connect/issues/414
 
 ## 0.8.4, 2024-10-23
 ### Improvement
@@ -137,24 +137,24 @@ the same column for insert.  Closes https://github.com/ClickHouse/datastore-conn
 available for Python 3.13.
 
 ### Bug fixes
-- ClickHouse errors are now detected and throw an exception even if the HTTP status code returned by ClickHouse is a 200.
+- Datastore errors are now detected and throw an exception even if the HTTP status code returned by Datastore is a 200.
 This can happen when there is a long-running query (such as a large `INSERT INTO ... SELECT FROM ...`) and `send_progress_in_http_headers`
 is enabled to keep the HTTP connection open.
 - Pandas NA (which is equivalent to Float NaN for Float values) is now inserted as NULL into Nullable(Float*) columns.  Closes
-https://github.com/ClickHouse/datastore-connect/issues/412
+https://github.com/Datastore/datastore-connect/issues/412
 
 ## 0.8.3, 2024-10-07
 ### Improvement
 - Add an optional `executor_threads` argument to the `get_async_client` method.  This controls the number of concurrent
 threads that each AsyncClient has available for queries.  Defaults to "number of CPU cores plus four".  Closes
-https://github.com/ClickHouse/datastore-connect/issues/407
+https://github.com/Datastore/datastore-connect/issues/407
 
 ## 0.8.2, 2024-10-04
 ### Bug Fix
-- Ensure lz4 compression does not exit on an empty block.  May fix https://github.com/ClickHouse/datastore-connect/issues/403.
+- Ensure lz4 compression does not exit on an empty block.  May fix https://github.com/Datastore/datastore-connect/issues/403.
 
 ### Improvement
-- Compress Arrow inserts (using pyarrow compression) if compression is set to `lz4` or `zstd`.  Closes https://github.com/ClickHouse/datastore-connect/issues/267.
+- Compress Arrow inserts (using pyarrow compression) if compression is set to `lz4` or `zstd`.  Closes https://github.com/Datastore/datastore-connect/issues/267.
 
 ## 0.8.1, 2024-09-29
 ### Bug Fix
@@ -166,12 +166,12 @@ https://github.com/ClickHouse/datastore-connect/issues/407
 - JSON data can be inserted as either a Python dictionary or a JSON string containing a JSON object `{}`.  Other
 forms of JSON data are not supported
 - Valid formats for the JSON type are 'native', which returns a Python dictionary, or 'string', which returns a JSON string
-- Any value can be inserted into a Variant column, and ClickHouse will try to correctly determine the correct Variant
+- Any value can be inserted into a Variant column, and Datastore will try to correctly determine the correct Variant
 Type for the value, based on its String representation.
 - More complete documentation for the new types will be provided in the future.
 
 #### Known limitations:
-- Each of these types must be enabled in the ClickHouse settings before using.  The "new" JSON type is available started
+- Each of these types must be enabled in the Datastore settings before using.  The "new" JSON type is available started
 with the 24.8 release
 - Returned JSON objects will only return the `max_dynamic_paths` number of elements (which defaults to 1024).  This
 will be fixed in a future release.
@@ -181,31 +181,31 @@ in a future release.
 simpler, established data types.
 
 This is the first time that a new `datastore_connect` features has been labeled "experimental", but these new
-datatypes are complex and still experimental in ClickHouse server.  Current test coverage for these types is also
+datatypes are complex and still experimental in Datastore server.  Current test coverage for these types is also
 quite limited.  Please don't hesitate to report issues with the new types.
 
 ### Bug Fixes
-- When operating ClickHouse Server in `strict` TLS mode, HTTPS connections [require](https://github.com/ClickHouse/poco/blob/master/NetSSL_OpenSSL/include/Poco/Net/Context.h#L84-L89) a client certificate even if that
+- When operating Datastore Server in `strict` TLS mode, HTTPS connections [require](https://github.com/Datastore/poco/blob/master/NetSSL_OpenSSL/include/Poco/Net/Context.h#L84-L89) a client certificate even if that
 certificate is not used for authentication.  A new client parameter `tls_mode='strict'` can be used in this situation where
 username/password authentication is being used with client certificates.  Other valid values for the new `tls_mode` setting
 are `'proxy'` when TLS termination occurs at a proxy, and `'mutual'` to specify mutual TLS authentication is used by
-the ClickHouse server.  If `tls_mode` is not set, and a client certificate and key are provided, `mutual` is assumed.
+the Datastore server.  If `tls_mode` is not set, and a client certificate and key are provided, `mutual` is assumed.
 - The server timezone was not being used for parameter binding if parameters were sent as a list instead of a dictionary.
-This should fully fix the reopened https://github.com/ClickHouse/datastore-connect/issues/377.
+This should fully fix the reopened https://github.com/Datastore/datastore-connect/issues/377.
 - String port numbers (such as from environmental variables) are now correctly interpreted to determine the correct interface/protocol.
-Fixes https://github.com/ClickHouse/datastore-connect/issues/395
-- Insert commands with a `SELECT FROM ... LIMIT 0` will no longer raise an exception.  Closes https://github.com/ClickHouse/datastore-connect/issues/389.
+Fixes https://github.com/Datastore/datastore-connect/issues/395
+- Insert commands with a `SELECT FROM ... LIMIT 0` will no longer raise an exception.  Closes https://github.com/Datastore/datastore-connect/issues/389.
 
 ### Improvements
 - Some low level errors for problems with Native format inserts and queries now include the relevant column name in the
 error message.  Thanks to [Angus Holder](https://github.com/angusholder) for the PR!
 - There is a new intermediate buffer for HTTP streaming/chunked queries.  The buffer will store raw data from the HTTP request
-until it is actually requested in a stream.  This allows some lag between reading the data from ClickHouse and processing
-the same data.  Previously, if processing the data stream fell 30 seconds behind the ClickHouse HTTP writes to the stream,
-the ClickHouse server would close the connection, aborting the query and stream processing.  This will now be mitigated by
+until it is actually requested in a stream.  This allows some lag between reading the data from Datastore and processing
+the same data.  Previously, if processing the data stream fell 30 seconds behind the Datastore HTTP writes to the stream,
+the Datastore server would close the connection, aborting the query and stream processing.  This will now be mitigated by
 storing the data stream in the new intermediate buffer.  By default, this buffer is set to 10 megabytes, but for slow
 processing of large queries where memory is not an issue, the buffer size can be increasing using the new `common` setting
-`http_buffer_size`.  This is a fix in some cases of https://github.com/ClickHouse/datastore-connect/issues/399, but note that
+`http_buffer_size`.  This is a fix in some cases of https://github.com/Datastore/datastore-connect/issues/399, but note that
 slow processing of large queries will still cause connection and processing failures if the data cannot be buffered.
 - It is now possible to correctly bind `DateTime64` type parameters when calling Client `query` methods through one of two approaches:
   - Wrap the Python `datetime.datetime` value in the new DT64Param class, e.g.
@@ -222,7 +222,7 @@ slow processing of large queries will still cause connection and processing fail
   
     parameters={'p1_64': dt_value, 'a1_64': [dt_value1, dt_value2]}
   ```
-  This closes https://github.com/ClickHouse/datastore-connect/issues/396, see also the similar issue https://github.com/ClickHouse/datastore-connect/issues/212
+  This closes https://github.com/Datastore/datastore-connect/issues/396, see also the similar issue https://github.com/Datastore/datastore-connect/issues/212
 
 
 ## 0.7.19, 2024-08-23
@@ -232,15 +232,15 @@ slow processing of large queries will still cause connection and processing fail
 ## 0.7.18, 2024-07-30
 ### Bug Fix
 - In some cases retrieving the os_user as part of the `client data` in the HTTP User-Agent header could throw an exception.  This
-has been fixed (os_user will not be sent in those cases).  Closes https://github.com/ClickHouse/datastore-connect/issues/380.
+has been fixed (os_user will not be sent in those cases).  Closes https://github.com/Datastore/datastore-connect/issues/380.
 
 ## 0.7.17, 2024-07-24
 ### Bug Fix
-- The client server_tz was not being correctly set if the server timezone was not UTC.  This should close https://github.com/ClickHouse/datastore-connect/issues/377
+- The client server_tz was not being correctly set if the server timezone was not UTC.  This should close https://github.com/Datastore/datastore-connect/issues/377
 
 ### Improvement
 - The os user can now be sent as part of the User-Agent HTTP header.  To disable this functionality for privacy reasons,
-set the new common/global setting `send_os_user` to False.  Closes https://github.com/ClickHouse/datastore-connect/issues/371.
+set the new common/global setting `send_os_user` to False.  Closes https://github.com/Datastore/datastore-connect/issues/371.
 
 ## 0.7.16, 2024-07-08
 ### Improvement
@@ -252,9 +252,9 @@ See also the updated [run_async example](./examples/run_async.py).
 
 ## 0.7.15, 2024-07-01
 ### Bug Fix
-- If the ClickHouse server was behind an https proxy that required mutual TLS authentication, the client would incorrectly
-attempt to use ClickHouse mutual TLS instead and authentication would fail.  It should now be possible to authenticate
-correctly in this situation by settings the `verify` parameter to `proxy`.  This should close https://github.com/ClickHouse/datastore-connect/issues/370
+- If the Datastore server was behind an https proxy that required mutual TLS authentication, the client would incorrectly
+attempt to use Datastore mutual TLS instead and authentication would fail.  It should now be possible to authenticate
+correctly in this situation by settings the `verify` parameter to `proxy`.  This should close https://github.com/Datastore/datastore-connect/issues/370
 
 ## 0.7.14, 2024-06-24
 ### Bug Fix
@@ -264,25 +264,25 @@ correctly in this situation by settings the `verify` parameter to `proxy`.  This
 ### Bug Fixes
 - Set required minimum version for optional tzlocal dependency.  Thanks to [drew-talon](https://github.com/drew-talon) for
 reporting the issue and submitting the fix.  Closes #360.
-- Extended the effect of the `show_clickhouse_errors` client setting to exclude showing hostname and port for errors
+- Extended the effect of the `show_datastore_errors` client setting to exclude showing hostname and port for errors
 when that setting is False.  Thanks to [Andy](https://github.com/andy1xx8) for the PR!
 
 ### Improvement
 - Add the ability to bind arbitrary, "heredoc" data (including binary data) into the query, as described
-[here](https://clickhouse.com/docs/en/sql-reference/syntax#heredoc).  To use this functionality, use a single heredoc
+[here](https://docs.hanzo.ai/datastore/en/sql-reference/syntax#heredoc).  To use this functionality, use a single heredoc
 tag, such as `$my_tag$`, in the query, and add that tag and the associated data into the query method `parameters` argument.
-For some examples, see the `test_embedded_binary` test in [test_client.py](https://github.com/ClickHouse/datastore-connect/blob/main/tests/integration_tests/test_client.py).
+For some examples, see the `test_embedded_binary` test in [test_client.py](https://github.com/Datastore/datastore-connect/blob/main/tests/integration_tests/test_client.py).
 Closes #363.
 
 ## 0.7.12, 2024-06-04
 ### Bug Fix
 - When using `query_df` with a FixedString column with a read format of 'string' (and the default `query_df` setting
 `use_extended_dtypes=True`), the resulting column in the dataframe will now be correctly set to the (extended) String dtype.
-Fixes https://github.com/ClickHouse/datastore-connect/issues/356
+Fixes https://github.com/Datastore/datastore-connect/issues/356
 
 ## 0.7.11, 2024-05-26
 ### Improvement
-- Python or Pandas float value to ClickHouse Decimal now correctly rounds Float values for more accurate conversions.  Thanks
+- Python or Pandas float value to Datastore Decimal now correctly rounds Float values for more accurate conversions.  Thanks
 to [Frederik Eychenié](https://github.com/feychenie) for the investigation and PR!
 
 ## 0.7.10, 2024-05-22
@@ -292,14 +292,14 @@ to [Frederik Eychenié](https://github.com/feychenie) for the investigation and 
 ## 0.7.9, 2024-05-21
 ### Bug Fixes 
 - query_df would raise a deprecation warning with recent Pandas version if there were empty blocks.  This should be fixed.
-https://github.com/ClickHouse/datastore-connect/issues/349
+https://github.com/Datastore/datastore-connect/issues/349
 - avoid a warning in timezone handling using the tzlocal library.  Thanks to [Tanner](https://github.com/tstenson) for the
 fix
 
 ### Improvement
-- The new client keyword argument `show_clickhouse_errors` controls whether the full ClickHouse error (including possibly
-sensitive information) is displayed when there is an error in ClickHouse processing.  It defaults to True.  If False,
-the simple string 'The ClickHouse server returned an error.' will be displayed.  Closes https://github.com/ClickHouse/datastore-connect/issues/344.
+- The new client keyword argument `show_datastore_errors` controls whether the full Datastore error (including possibly
+sensitive information) is displayed when there is an error in Datastore processing.  It defaults to True.  If False,
+the simple string 'The Datastore server returned an error.' will be displayed.  Closes https://github.com/Datastore/datastore-connect/issues/344.
 - Updated to Cython 3.0.10
 
 ### Improvement
@@ -315,7 +315,7 @@ DST was not active, and vice versa.
 ## 0.7.7, 2024-04-03
 ### Bug Fix
 - Fixed client side binding for complex types containing floats or integers that was broken in version 0.7.5.
-Closes https://github.com/ClickHouse/datastore-connect/issues/335.
+Closes https://github.com/Datastore/datastore-connect/issues/335.
 ### Improvement
 - Added a `raw_stream` method to the Client the returns an io.Base.  Use this instead of the `raw_query` method
 with the (now removed) optional `stream` keyword boolean.  Thanks to [Martijn Thé](https://github.com/martijnthe) for
@@ -323,58 +323,58 @@ the PR that highlighted the somewhat messy public API.
 
 ## 0.7.6, 2024-04-01
 ### Bug Fix
-- Fixed issue with SQLAlchemy Point type.  Closes https://github.com/ClickHouse/datastore-connect/issues/332.
+- Fixed issue with SQLAlchemy Point type.  Closes https://github.com/Datastore/datastore-connect/issues/332.
 
 ## 0.7.5, 2024-03-28
 ### Bug Fixes
 - Fixed client side binding for Python format strings using `%d` (int) and `%f` (float) format patterns.  Closes
-https://github.com/ClickHouse/datastore-connect/issues/327
+https://github.com/Datastore/datastore-connect/issues/327
 - Allows empty `data` argument in the initializer of `ExternalFile` / `ExternalData` objects. Thanks to
   [martijnthe](https://github.com/martijnthe) for the PR!
 
 ## 0.7.4, 2024-03-24
 ### Improvement
-- Added the new client method `query_arrow_stream` for streaming PyArrow queries from ClickHouse.  Big thanks to
-[NotSimone](https://github.com/NotSimone) for the feature and tests!  Closes https://github.com/ClickHouse/datastore-connect/issues/155.
+- Added the new client method `query_arrow_stream` for streaming PyArrow queries from Datastore.  Big thanks to
+[NotSimone](https://github.com/NotSimone) for the feature and tests!  Closes https://github.com/Datastore/datastore-connect/issues/155.
 
 ## 0.7.3, 2024-03-14
 ### Improvement
-- Add summary field to Cursor object to retrieve the result of 'X-Clickhouse-Summary' header.  Thanks to 
+- Add summary field to Cursor object to retrieve the result of 'X-Datastore-Summary' header.  Thanks to 
 [elchyn-cheliabiyeu](https://github.com/elchyn-cheliabiyeu) for the PR!
 
 ## 0.7.2, 2024-03-07
 ### Bug Fixes
-- Inserts into columns with multibyte UTF-8 names were broken.  This has been fixed.  https://github.com/ClickHouse/datastore-connect/issues/312
+- Inserts into columns with multibyte UTF-8 names were broken.  This has been fixed.  https://github.com/Datastore/datastore-connect/issues/312
 - If the result of applying the precedence of timezones to a column results in an explicit UTC timezone, the datetime object returned
-should now be timezone naive.  This should make the behavior consistent with the [documentation](https://clickhouse.com/docs/en/integrations/python#time-zones).
-Closes https://github.com/ClickHouse/datastore-connect/issues/308 (except for a documentation update)
-- Extraneous semicolons are automatically removed from the end of queries.  Addresses the most basic behavior in https://github.com/ClickHouse/datastore-connect/issues/310.
+should now be timezone naive.  This should make the behavior consistent with the [documentation](https://docs.hanzo.ai/datastore/en/integrations/python#time-zones).
+Closes https://github.com/Datastore/datastore-connect/issues/308 (except for a documentation update)
+- Extraneous semicolons are automatically removed from the end of queries.  Addresses the most basic behavior in https://github.com/Datastore/datastore-connect/issues/310.
 
 ### Performance Improvement
-- Pandas DataFrame returned from the client `query_df` method should be constructed somewhat faster in cases where the data returned in ClickHouse
+- Pandas DataFrame returned from the client `query_df` method should be constructed somewhat faster in cases where the data returned in Datastore
 is in many small blocks.  Note that performance gains in this use case are somewhat limited because of the memory and copying cost of
-building a large DataFrame from many smaller ClickHouse Native block structures, so such performance problems should normally be addressed at the
-query or ClickHouse data storage level (by for example, reducing the number of partitions and/or shards referenced by the query).  This may partially
-address https://github.com/ClickHouse/datastore-connect/issues/307.
+building a large DataFrame from many smaller Datastore Native block structures, so such performance problems should normally be addressed at the
+query or Datastore data storage level (by for example, reducing the number of partitions and/or shards referenced by the query).  This may partially
+address https://github.com/Datastore/datastore-connect/issues/307.
 
 ## 0.7.1, 2024-02-28
 ### Bug Fixes
 - Changed type hint of the `query` parameter in Client `query*` methods to `Optional[str]` to work correctly with type analyzers.
 This also highlights that using a query_context instead of a query in these methods is supported (and preferred for repeated queries).
 Thanks to [Avery Fischer](https://github.com/biggerfisch) for the PR!
-- Fixed sending a full table name to the `insert_file` tools function.  Closes https://github.com/ClickHouse/datastore-connect/issues/305
+- Fixed sending a full table name to the `insert_file` tools function.  Closes https://github.com/Datastore/datastore-connect/issues/305
 
 ## 0.7.0, 2024-01-22
 ### Breaking Change
 - Python 3.7 builds are no longer part of the wheels deployed to PyPI
 
 ### Bug Fix
-- Due to a change in default ClickHouse settings, inserts with "named" Tuple types no longer worked with ClickHouse
+- Due to a change in default Datastore settings, inserts with "named" Tuple types no longer worked with Datastore
 version 24.1 and later.  This has been fixed.
 
 ### Improvements
-- Some types of security and other proxies require additional query parameters on any call to ClickHouse server behind
-such a proxy.  Because the HTTPClient makes certain initialization queries to ClickHouse before any query parameters
+- Some types of security and other proxies require additional query parameters on any call to Datastore server behind
+such a proxy.  Because the HTTPClient makes certain initialization queries to Datastore before any query parameters
 are set, it was difficult or impossible to create a Client successfully.  You can now modify the HTTPClient class level
 properties `params` and `valid_transport_settings` before calling `get_client` so that such "special" query parameters will be
 included even on initialization queries.  Thanks to [Aleksey Astafiev](https://github.com/aastafiev) for highlighting
@@ -396,7 +396,7 @@ for the PR!
 ## 0.6.22, 2023-12-01
 ### Improvements
 - Fix typo in log message for bad inserts.  Thanks to [Stas](https://github.com/reijnnn) for the fix.
-- Allow non ClickHouse Cloud tests to run on community Pull Requests
+- Allow non Datastore Cloud tests to run on community Pull Requests
 - Update to Cython 3.0.6
 
 ### Bug Fix
@@ -406,7 +406,7 @@ for the PR!
 
 ## 0.6.21, 2023-11-23
 ### Improvements
-- Added support for Point type.  Closes https://github.com/ClickHouse/datastore-connect/issues/151.  Thanks to
+- Added support for Point type.  Closes https://github.com/Datastore/datastore-connect/issues/151.  Thanks to
 [Dhruvit Maniya](https://github.com/Dhruvit96) for the PR!
 - Upgraded to Cython 3.0.5
 - Change exception handling in C API to stop spamming stderr
@@ -414,7 +414,7 @@ for the PR!
 ## 0.6.20, 2023-11-09
 ### Bug Fix
 - Fixed an issue where client side binding of datetimes with timezones would produce the incorrect time string if
-timezones differed between the client and ClickHouse server.  Closes https://github.com/ClickHouse/datastore-connect/issues/268
+timezones differed between the client and Datastore server.  Closes https://github.com/Datastore/datastore-connect/issues/268
 
 ## 0.6.19, 2023-11-07
 ### Bug Fixes
@@ -423,24 +423,24 @@ invalid input data, any attempt to insert None into a non-Nullable String or Low
 a DataError
 - Reading a named Tuple column where the Tuple element names contained spaces would fail. In particular this would
 cause expected failures reading the experimental JSON column type with spaces in the keys.  This has been fixed.  Closes
-https://github.com/ClickHouse/datastore-connect/issues/265.  Note that handling spaces in column types is tricky and
+https://github.com/Datastore/datastore-connect/issues/265.  Note that handling spaces in column types is tricky and
 fragile in several respects, so the best approach remains to use simple column names without spaces.
 
 ## 0.6.18, 2023-10-25
 ### Bug Fixes
 - Reduce the estimated insert block size from 16-32MB to 1-2MB for large inserts.  The large data transfers could cause
-"write timeout" errors in the Python code or "empty query" responses from ClickHouse over HTTPS connections.
-Should fix https://github.com/ClickHouse/datastore-connect/issues/258
+"write timeout" errors in the Python code or "empty query" responses from Datastore over HTTPS connections.
+Should fix https://github.com/Datastore/datastore-connect/issues/258
 - Ensure that the internal client _progress_interval is positive even if a very small `send_receive_timeout` value is specified.
-Closes https://github.com/ClickHouse/datastore-connect/issues/259.  Note that a very short `send_receive_timeout` is not recommended.
+Closes https://github.com/Datastore/datastore-connect/issues/259.  Note that a very short `send_receive_timeout` is not recommended.
 
 ## 0.6.17, 2023-10-21
 ### Bug Fix
-- Fix "negative" Date32 (before 1970-01-01) values for numpy and Pandas queries.  Closes https://github.com/ClickHouse/datastore-connect/issues/254
+- Fix "negative" Date32 (before 1970-01-01) values for numpy and Pandas queries.  Closes https://github.com/Datastore/datastore-connect/issues/254
 
 ## 0.6.16, 2023-10-18
 ### Bug Fix
-- Remove bad private import to fix C Linkage.  Closes https://github.com/ClickHouse/datastore-connect/issues/252
+- Remove bad private import to fix C Linkage.  Closes https://github.com/Datastore/datastore-connect/issues/252
 
 ## 0.6.15, 2023-10-16
 ### Improvement
@@ -448,18 +448,18 @@ Closes https://github.com/ClickHouse/datastore-connect/issues/259.  Note that a 
 - The main `datastore-connect.get_client` method now displays type hints and ignores non-keyword arguments.  Thanks to
 [Avery Fischer](https://github.com/biggerfisch) for the usability improvement!
 - Log messages regarding C optimization availability and JSON library selection have been change from INFO to DEBUG.  Closes
-https://github.com/ClickHouse/datastore-connect/issues/249
+https://github.com/Datastore/datastore-connect/issues/249
 
 ## 0.6.14, 2023-09-22
 ### Bug Fixes
-- Fixed insert error when inserting a zero length string into a FixedString column.  Closes https://github.com/ClickHouse/datastore-connect/issues/244
+- Fixed insert error when inserting a zero length string into a FixedString column.  Closes https://github.com/Datastore/datastore-connect/issues/244
 - Removed unnecessary validate_entrypoints import from top level package __init__ that was breaking Python 3.7.  Note that Python 3.7 is EOL
 and will no longer be supported as of January 1, 2024.
 
 ## 0.6.13, 2023-09-20
 ### Bug Fix
 - Fixed an issue with the automatic retry of "connection reset errors".  This should prevent exceptions when the
-ClickHouse server closes a Keep Alive connection while a new request is in flight.
+Datastore server closes a Keep Alive connection while a new request is in flight.
 
 ### Improvement
 - Improved support for typing tools by adding a `py.typed` file.  Thanks to [Avery Fischer](https://github.com/biggerfisch)
@@ -467,15 +467,15 @@ for the contribution.
 
 ## 0.6.12, 2023-08-30
 ### Bug Fix
-- Nested empty Maps would return an IndexError when queried.  https://github.com/ClickHouse/datastore-connect/issues/239.  Thanks
+- Nested empty Maps would return an IndexError when queried.  https://github.com/Datastore/datastore-connect/issues/239.  Thanks
 to [Ashton Hudson](https://github.com/CaptainCuddleCube) for the report and the fix
 
 ## 0.6.11, 2023-08-30
 ### Bug fixes
 - Inserts using Pandas 2.1 would fail due to a removed method in the Pandas library.  There is now a workaround/fix for
-this.  Closes https://github.com/ClickHouse/datastore-connect/issues/234
+this.  Closes https://github.com/Datastore/datastore-connect/issues/234
 - Inserts into a FixedString column that were not the expected size could cause corrupt insert blocks and mysterious errors
-from the ClickHouse server.  Validation has been added so that more meaningful error messages are generated if a fixed string
+from the Datastore server.  Validation has been added so that more meaningful error messages are generated if a fixed string
 value is an invalid size.  A reminder that strings which are "too short" for a FixedString column will be padded with 0 bytes, while
 strings that are "too long" will generate an exception during the insert.
 
@@ -486,9 +486,9 @@ strings that are "too long" will generate an exception during the insert.
 ## 0.6.9, 2023-08-21
 ### Improvements
 - Logging and exception handling for failed insert transformations has been reworked.  If an exception is thrown when attempting to
-convert Python, Pandas, or Numpy data into ClickHouse Native format, the column name and type will be logged, as well as a
+convert Python, Pandas, or Numpy data into Datastore Native format, the column name and type will be logged, as well as a
 stack trace of actual exception (note this may be in the C/Cython code, so the exception data may still be difficult to interpret).
-This partially addresses https://github.com/ClickHouse/datastore-connect/issues/229.  Unfortunately determining data errors on a row level in
+This partially addresses https://github.com/Datastore/datastore-connect/issues/229.  Unfortunately determining data errors on a row level in
 addition to the column level is not practical in most cases without seriously impacting performance.
 - Version information has been moved from a top level `VERSION` to a Python `__version__` file in the package.  This removes the Python 3.7 dependency
 on importlib_metadata.
@@ -496,50 +496,50 @@ on importlib_metadata.
 
 ## 0.6.8, 2023-07-18
 ### Bug Fix
-- Fixed client `raw_insert` method when a compression method specified.  https://github.com/ClickHouse/datastore-connect/issues/223
+- Fixed client `raw_insert` method when a compression method specified.  https://github.com/Datastore/datastore-connect/issues/223
 
 ### Improvement
-- Add compression parameter to the clickhouse `tools.insert_file` method.  '.gz' and '.gzip' extensions are automatically
+- Add compression parameter to the datastore `tools.insert_file` method.  '.gz' and '.gzip' extensions are automatically
 recognized.  
 
 ## 0.6.7, 2023-07-18
 ### Bug Fixes
-- Fixed an issue for older versions of ClickHouse where the server would send an initial block of 0 rows for larger queries.
-This would break some queries with LowCardinality columns.  Closes https://github.com/ClickHouse/datastore-connect/issues/221 
+- Fixed an issue for older versions of Datastore where the server would send an initial block of 0 rows for larger queries.
+This would break some queries with LowCardinality columns.  Closes https://github.com/Datastore/datastore-connect/issues/221 
 - Fixed the`compression` alias for the `compress` client setting in SQLAlchemy/Superset DSN urls.
 
 ### Improvements
 - Upgraded to Cython 3.0.0 final release!
-- Reversed the internal variable names of keys and indexes for low cardinality columns to be consistent with the ClickHouse server nomenclature.
+- Reversed the internal variable names of keys and indexes for low cardinality columns to be consistent with the Datastore server nomenclature.
 
 ## 0.6.6, 2023-07-07
 ### Bug Fix
 - Inserting into an Enum column from a Pandas DataFrame with integer values only inserted 0 values.  This is fixed.
-https://github.com/ClickHouse/datastore-connect/issues/219
+https://github.com/Datastore/datastore-connect/issues/219
 
 ## 0.6.5, 2023-07-06
 ### Bug Fixes
 - The Client min_version method now ignores unrecognized "text" elements.  This could cause issues for unofficial
-ClickHouse releases. Thanks to [Diego Nieto](https://github.com/lesandie) for the fix!
+Datastore releases. Thanks to [Diego Nieto](https://github.com/lesandie) for the fix!
 - In most cases insert query is now sent as part of the POST body instead of as a query parameter.  This fixes
-https://github.com/ClickHouse/datastore-connect/issues/213.  Note that this does not happen for direct file inserts
+https://github.com/Datastore/datastore-connect/issues/213.  Note that this does not happen for direct file inserts
 using the `driver.tools` module, since these rely on an unmodified buffered input stream to efficiently upload files.
 In that case the actual insert query will still be passed as a query parameter.
-- All datetime objects returned from a query will now be timezone aware.  This fixes https://github.com/ClickHouse/datastore-connect/issues/210.
+- All datetime objects returned from a query will now be timezone aware.  This fixes https://github.com/Datastore/datastore-connect/issues/210.
 There remains one exception to this -- if the calculated timezone and the local timezone are both UTC, then naive timezones
 will be used to improve performance in such "all UTC" environments.
-- Inserting Python dictionaries into a ClickHouse "named" Tuple column now works correctly.  Fixes https://github.com/ClickHouse/datastore-connect/issues/215.
+- Inserting Python dictionaries into a Datastore "named" Tuple column now works correctly.  Fixes https://github.com/Datastore/datastore-connect/issues/215.
 Note that using dictionaries for inserts will be noticeably slower than inserting the equivalent Python tuple value
 (with elements in the correct order)
 
 ### Improvements
 - Client error messages used to be cut off at 240 characters to avoid creating huge log files.  This value is now
-configurable using the `common.max_error_size` setting.  Use `0` for this setting to get the full ClickHouse
+configurable using the `common.max_error_size` setting.  Use `0` for this setting to get the full Datastore
 error message.  In addition, the default has been changed to `1024` to capture more SQL errors without needing to
 modify the global setting value.  Thanks to [Ramlah Aziz](https://github.com/RamlahAziz) for the update!
 - All Client insert methods now return a simple QuerySummary object, which includes properties `written_rows`,
-`written_bytes`, and `query_id` calculated from ClickHouse HTTP response headers.  A QuerySummary object is also
-returned from the Client `command` method if the command does not return other data. Closes https://github.com/ClickHouse/datastore-connect/issues/216
+`written_bytes`, and `query_id` calculated from Datastore HTTP response headers.  A QuerySummary object is also
+returned from the Client `command` method if the command does not return other data. Closes https://github.com/Datastore/datastore-connect/issues/216
 - Version determination no longer indirectly depends on the setuptools `pkg_resources` package.  This also
 avoids some indirect dependency problems.  Thanks to [cwegener](https://github.com/cwegener) for the PR!
 
@@ -547,15 +547,15 @@ avoids some indirect dependency problems.  Thanks to [cwegener](https://github.c
 ### Bug Fixes
 - Quote database name when retrieving tables via SQLAlchemy.  Fixes the Superset issue https://github.com/apache/superset/issues/24372
 for recent versions of Superset using datastore-connect
-- Don't rely on the ClickHouse currentDatabase() function to set an explicit database parameter.  This should not change functionality
-when no database is specified in Client creation since ClickHouse will use the user's default database in that situation regardless.
-Fixes https://github.com/ClickHouse/datastore-connect/issues/207
+- Don't rely on the Datastore currentDatabase() function to set an explicit database parameter.  This should not change functionality
+when no database is specified in Client creation since Datastore will use the user's default database in that situation regardless.
+Fixes https://github.com/Datastore/datastore-connect/issues/207
 
 ## 0.6.3, 2023-06-16
 ### Bug Fix
 - Inserts into decimal columns first convert the source value to a Python Decimal to work around floating point
-rounding issues.  Fixes https://github.com/ClickHouse/datastore-connect/issues/203
-- DateTime64 values were broken for dates before 01-01-1970.  This is fixed.  https://github.com/ClickHouse/datastore-connect/issues/204
+rounding issues.  Fixes https://github.com/Datastore/datastore-connect/issues/203
+- DateTime64 values were broken for dates before 01-01-1970.  This is fixed.  https://github.com/Datastore/datastore-connect/issues/204
 
 ## 0.6.2, 2023-06-10
 ### Improvements
@@ -563,7 +563,7 @@ rounding issues.  Fixes https://github.com/ClickHouse/datastore-connect/issues/2
 - Inserts for string columns are now C optimized (approximately 2x faster)
 
 ### Bug Fix
-- Very long running queries could break because ClickHouse returned too many progress headers.  Thanks to
+- Very long running queries could break because Datastore returned too many progress headers.  Thanks to
 [Ivan](https://github.com/istrebitel-1) for the fix
 
 ## 0.6.1, 2023-06-06
@@ -573,11 +573,11 @@ Minor documentation clean up regarding Superset compatibility
 ## 0.6.0, 2023-06-05
 ### Bug Fixes
 - Use uuid4 instead of uuid1 for generating client level session_ids, as well as use a new urllib3 PoolManager
-when multiprocessing mode is detected.  This should fix https://github.com/ClickHouse/datastore-connect/issues/194.
+when multiprocessing mode is detected.  This should fix https://github.com/Datastore/datastore-connect/issues/194.
 Thanks to [Guillaume Matheron](https://github.com/guillaumematheron) for filing the issue and digging into details.
 The underlying problem is that the Python uuid1() is not guaranteed to be unique in a `forked` multiprocessing environment.
 - Change log warning to debug message if numpy is not available for C bindings.  This check is harmless if numpy
-is not installed and should not have produced a warning.  Fixes https://github.com/ClickHouse/datastore-connect/issues/195
+is not installed and should not have produced a warning.  Fixes https://github.com/Datastore/datastore-connect/issues/195
 
 ### Improvements
 - Cython version upgraded to 3.0.0b2
@@ -589,28 +589,28 @@ for large inserts of row oriented data.
 
 ## 0.5.25, 2023-05-23
 ### Bug Fix
-- The client will now validate that the `client_protocol_version` query parameter is actually received and used by the ClickHouse
+- The client will now validate that the `client_protocol_version` query parameter is actually received and used by the Datastore
 server before assuming that data returned confirms to the expected protocol version.  This fixes an incompatibility with the
-current versions of CHProxy (and possibly other proxies that restrict the query parameters passed to the ClickHouse Server).
+current versions of CHProxy (and possibly other proxies that restrict the query parameters passed to the Datastore Server).
 Note that other features that require the use of query parameters (such as server side bound query parameters) may also fail
-because of this behavior in CHProxy.  Fixes https://github.com/ClickHouse/datastore-connect/issues/191
+because of this behavior in CHProxy.  Fixes https://github.com/Datastore/datastore-connect/issues/191
 
 ## 0.5.24, 2023-05-11
 ### Bug Fixes
-- The client `command` method now accepts ClickHouse "external data."  Closes https://github.com/ClickHouse/datastore-connect/issues/186
-- Arrays of Python date and datetime objects are now correctly formatted when use as server side parameters.  Fixes https://github.com/ClickHouse/datastore-connect/issues/188
-- Fixed inserts of SimpleAggregateFunction columns with a LowCardinality type parameter.  https://github.com/ClickHouse/datastore-connect/issues/187
+- The client `command` method now accepts Datastore "external data."  Closes https://github.com/Datastore/datastore-connect/issues/186
+- Arrays of Python date and datetime objects are now correctly formatted when use as server side parameters.  Fixes https://github.com/Datastore/datastore-connect/issues/188
+- Fixed inserts of SimpleAggregateFunction columns with a LowCardinality type parameter.  https://github.com/Datastore/datastore-connect/issues/187
 
 ## 0.5.23, 2023-05-03
 ### Bug Fixes
 - SQLAlchemy table reflection threw an exception for `SimpleAggregateFunction` columns.  This has been fixed.
-https://github.com/ClickHouse/datastore-connect/issues/180
+https://github.com/Datastore/datastore-connect/issues/180
 - The client no longer logs an invalid warning for query types that did not return a timezone header.
-https://github.com/ClickHouse/datastore-connect/issues/181
+https://github.com/Datastore/datastore-connect/issues/181
 - Querying `SimpleAggregateFunction` columns with a LowCardinality type parameter was broken.  This has been fixed.
-https://github.com/ClickHouse/datastore-connect/issues/182
-- The `query_arrow` method now correctly accepts the external_data parameter.  https://github.com/ClickHouse/datastore-connect/issues/183
-- The `query_arrow` method has been fixed for read only queries/settings.  https://github.com/ClickHouse/datastore-connect/issues/184
+https://github.com/Datastore/datastore-connect/issues/182
+- The `query_arrow` method now correctly accepts the external_data parameter.  https://github.com/Datastore/datastore-connect/issues/183
+- The `query_arrow` method has been fixed for read only queries/settings.  https://github.com/Datastore/datastore-connect/issues/184
 
 ### New Feature
 - A common setting `max_connection_age` has been added, which will ensure that HTTP connections are not reused forever (this
@@ -624,36 +624,36 @@ can help with certain load balancing issues.  It defaults to 10 minutes
 ### Bug Fix
 - Logging "Unexpected Http Driver Exception" only as WARNING instead of ERROR. Use the raised OperationalError if you depend on this.  Thanks to
 [Alexandro Sandre](https://github.com/alexandrosandre) for the fix.
-- The `wait_end_of_query` setting is no longer automatically sent with inserts.  This caused unnecessary buffering on the ClickHouse server file system, especially
+- The `wait_end_of_query` setting is no longer automatically sent with inserts.  This caused unnecessary buffering on the Datastore server file system, especially
 in the case of many small inserts.  It can still be added using the `settings` dictionary of the client `*insert` methods if needed for some reason.
 - The query setting `use_na_values` has been renamed to `use_extended_dtypes` and now applies to all extended/special Pandas dtypes (except the Pandas Timestamp type).
 Set this to `False` to limit  the dtypes returned in Pandas dataframes to the "basic" numpy types.  (Note that this will force the use of numpy object arrays
-for most "nullable types")  This should allow creating "basic" dataframes for greater compatibility. Closes https://github.com/ClickHouse/datastore-connect/issues/172.  
+for most "nullable types")  This should allow creating "basic" dataframes for greater compatibility. Closes https://github.com/Datastore/datastore-connect/issues/172.  
 
 ## 0.5.20, 2023-04-06
 ### Bug Fixes
 - Fix Pandas dataframe inserts where the Dataframe index does not match the data values (after, for example, creating a new DataFrame from
-a subset of the original.)   https://github.com/ClickHouse/datastore-connect/issues/167  Thanks to [Georgi Peev](https://github.com/georgipeev) for
+a subset of the original.)   https://github.com/Datastore/datastore-connect/issues/167  Thanks to [Georgi Peev](https://github.com/georgipeev) for
 the report and suggested fix, and his continued stress testing of Pandas functionality.
 - Compression and other control settings were not properly sent with the request if the corresponding setting was not enabled on the server.
-Many thanks to [Alexander Khmelevskiy](https://github.com/khmelevskiy) for the extended investigation and subsequent fix.  https://github.com/ClickHouse/datastore-connect/issues/157
+Many thanks to [Alexander Khmelevskiy](https://github.com/khmelevskiy) for the extended investigation and subsequent fix.  https://github.com/Datastore/datastore-connect/issues/157
 
 
 ## 0.5.19, 2023-04-05
 ### Bug Fixes
-- Fix quoting and escaping of array literals in server parameters.  See [#159](https://github.com/ClickHouse/datastore-connect/issues/159).  Big thanks to
+- Fix quoting and escaping of array literals in server parameters.  See [#159](https://github.com/Datastore/datastore-connect/issues/159).  Big thanks to
 [Joachim Jablon](https://github.com/ewjoachim) for the report and the fix.
-- Pandas and numpy Date values were incorrect for values after 2050.  This has been fixed.  https://github.com/ClickHouse/datastore-connect/issues/164
+- Pandas and numpy Date values were incorrect for values after 2050.  This has been fixed.  https://github.com/Datastore/datastore-connect/issues/164
 - Fixed server side parameter binding of the NULL value for Nullable types
 - Added support for `no_proxy`/`NO_PROXY` environment variable.  Also added support for lower case `http_proxy` and `https_proxy` variables.  Note that
-lower case versions have precedence over upper case versions.  Fixes https://github.com/ClickHouse/datastore-connect/issues/163
+lower case versions have precedence over upper case versions.  Fixes https://github.com/Datastore/datastore-connect/issues/163
 
 ## 0.5.18, 2023-03-30
 ### Performance Improvement
 - The server timezone will not be applied (and Python datetime types will be timezone naive) if the client and server timezones match
 and the `get_client` apply_server_timezone parameter is True (the default).  This improves performance where client and server
 have the same (non-UTC) timezone.  To override this behavior and always apply a server timezone to the result, use `apply_server_timezone='always'`.
-This should fix https://github.com/ClickHouse/datastore-connect/issues/157
+This should fix https://github.com/Datastore/datastore-connect/issues/157
 
 
 ## 0.5.17, 2023-03-26
@@ -663,21 +663,21 @@ This should fix https://github.com/ClickHouse/datastore-connect/issues/157
 - A new boolean parameter `apply_server_timezone` has been added to the main `get_client` method.  Setting this
 parameter to `True` (the default) will apply the server timezone (if not UTC) to values returned by the client `query*`
 methods.  The previous behavior would always return timezone naive, UTC based Python and Pandas `datetime` objects for
-ClickHouse DateTime and DateTime64 columns without a defined timezone.  To revert to the previous behavior, set the
-`apply_server_timezone` parameter to `False`.  Closes https://github.com/ClickHouse/datastore-connect/issues/152
+Datastore DateTime and DateTime64 columns without a defined timezone.  To revert to the previous behavior, set the
+`apply_server_timezone` parameter to `False`.  Closes https://github.com/Datastore/datastore-connect/issues/152
 - The timezone logic applied to query results has been simplified and now uses the following order of precedence:
   - Use the column timezone for the column if it is specified using the `column_tzs` parameter
-  - Use the column timezone for the column if specified in the ClickHouse column definition (only works for ClickHouse versions 23.2 and later)
+  - Use the column timezone for the column if specified in the Datastore column definition (only works for Datastore versions 23.2 and later)
   - Use the query timezone for the query if it is set using the `query_tz` parameter
-  - Use the "response" timezone for the query as read from the `X-ClickHouse-Timezone` header if different from the server timezone.  This closes https://github.com/ClickHouse/datastore-connect/issues/138.
-  - Use the ClickHouse server timezone (if the client parameter `apply_server_timezone` is `True`)
+  - Use the "response" timezone for the query as read from the `X-Datastore-Timezone` header if different from the server timezone.  This closes https://github.com/Datastore/datastore-connect/issues/138.
+  - Use the Datastore server timezone (if the client parameter `apply_server_timezone` is `True`)
 - Note if the detected timezone according to the above precedence is UTC, `datastore-connect` will always return a naive datetime object with no timezone information
 
 ### New Feature
-- ClickHouse external data is now support for all client `query` methods.  To send external data, construct a `driver.external.ExternalData` object and
-send it as the `external_data` parameter in the appropriate query method.  See the [ClickHouse documentation](https://clickhouse.com/docs/en/engines/table-engines/special/external-data)
-for additional details.  There are also examples in the [test file ](https://github.com/ClickHouse/datastore-connect/blob/main/tests/integration_tests/test_external_data.py).
-Closes https://github.com/ClickHouse/datastore-connect/issues/98
+- Datastore external data is now support for all client `query` methods.  To send external data, construct a `driver.external.ExternalData` object and
+send it as the `external_data` parameter in the appropriate query method.  See the [Datastore documentation](https://docs.hanzo.ai/datastore/en/engines/table-engines/special/external-data)
+for additional details.  There are also examples in the [test file ](https://github.com/Datastore/datastore-connect/blob/main/tests/integration_tests/test_external_data.py).
+Closes https://github.com/Datastore/datastore-connect/issues/98
 
 
 ## 0.5.16, 2023-03-15
@@ -689,20 +689,20 @@ to [Filipp Balakin](https://github.com/Barsoomx) for the fix.
 - String columns now accept values of bytes-like objects (bytes/bytearray/etc.) for inserts (as with other inserts, all
 values for the inserted column should be the same types, either a bytes-like object or `str`).  A corresponding `bytes`
 read format has been enabled for String columns as well.  Thanks to [Tim Nooran](https://github.com/TimNooren) for opening
-the issue and providing unit tests.  https://github.com/ClickHouse/datastore-connect/issues/148
+the issue and providing unit tests.  https://github.com/Datastore/datastore-connect/issues/148
 - Cython version upgraded to 3.0.0b1
 
 
 ## 0.5.15, 2023-03-10
 ### Bug Fix
 - Remove unnecessary addition of the client database to the table name for inserts. Fixes
-https://github.com/ClickHouse/datastore-connect/issues/145
+https://github.com/Datastore/datastore-connect/issues/145
 
 ### Improvement
-- The driver should now work for older versions of ClickHouse back to 19.16.  Note that older versions are not
-officially tested or supported (like the main ClickHouse database, we officially support the last three monthly ClickHouse
-releases and the last two LTS ClickHouse releases).  For versions prior to 19.17, you may want change the new `readonly`
-`datastore_connect.common` setting to '1' to allow sending ClickHouse settings with individual queries (if the user has
+- The driver should now work for older versions of Datastore back to 19.16.  Note that older versions are not
+officially tested or supported (like the main Datastore database, we officially support the last three monthly Datastore
+releases and the last two LTS Datastore releases).  For versions prior to 19.17, you may want change the new `readonly`
+`datastore_connect.common` setting to '1' to allow sending Datastore settings with individual queries (if the user has
 write permissions).  Thanks to [Aleksey Astafiev](https://github.com/aastafiev) for this contribution and for
 updating the tests to run with these legacy versions!
 
@@ -710,7 +710,7 @@ updating the tests to run with these legacy versions!
 ## 0.5.14, 2023-03-02
 ### Bug Fix
 - Remove direct pandas import that caused an unrecoverable error when pandas was not installed.
-https://github.com/ClickHouse/datastore-connect/issues/139
+https://github.com/Datastore/datastore-connect/issues/139
 
 
 ## 0.5.13, 2023-02-27
@@ -718,20 +718,20 @@ https://github.com/ClickHouse/datastore-connect/issues/139
 ### Improvements
 - By default, reading Pandas Dataframes with query_df and query_df_stream now sets a new QueryContext property
 of `use_pandas_na` to `True`.  When `use_pandas_na` is True, datastore_connect will attempt to use Pandas "missing"
-values, such as pandas.NaT and pandas.NA, for ClickHouse NULLs (in Nullable columns only), and use the associated
-extended Pandas dtype.  Closes https://github.com/ClickHouse/datastore-connect/issues/132
+values, such as pandas.NaT and pandas.NA, for Datastore NULLs (in Nullable columns only), and use the associated
+extended Pandas dtype.  Closes https://github.com/Datastore/datastore-connect/issues/132
 - There are new low level optimizations for reading some Nullable columns, and writing Pandas dataframes
 
 ### Bug Fixes
-- Timezone information from ClickHouse DateTime columns with a timezone was lost.  There was a workaround implemented
-for this issue in v0.5.8 that allowed assigned timezones to the query or columns on the client side.  ClickHouse now
+- Timezone information from Datastore DateTime columns with a timezone was lost.  There was a workaround implemented
+for this issue in v0.5.8 that allowed assigned timezones to the query or columns on the client side.  Datastore now
 support sending this timezone data with the column, but only in server versions 23.2 and later.  If such a version is
 detected, datastore-connect will return timezone aware DateTime values without a workaround.  Fixes
-https://github.com/ClickHouse/datastore-connect/issues/120
+https://github.com/Datastore/datastore-connect/issues/120
 - For certain queries, an incorrect, non-zero "zero value" would be returned for queries where `use_none` was set
 to `False`.  All NULL values are now properly converted.
 - Timezone data was lost when a DateTime64 column with a timezone was converted to a Pandas DataFrame.  This has been
-fixed.  https://github.com/ClickHouse/datastore-connect/issues/136
+fixed.  https://github.com/Datastore/datastore-connect/issues/136
 - send_progress headers were not being correctly requested, which could result in unexpected timeouts for long-running
 queries.  This has been fixed.
 
@@ -739,9 +739,9 @@ queries.  This has been fixed.
 ## 0.5.12, 2023-02-16
 ### Improvement
 - A new keyword parameter `server_host_name` is now recognized by the `datastore_connect.get_client` method.  This identifies
-the "real" ClickHouse server hostname that should be used for HTTPS/TLS certificate validation, in cases where access to
+the "real" Datastore server hostname that should be used for HTTPS/TLS certificate validation, in cases where access to
 the server is through an ssh tunnel or other proxy with a different hostname.  For examples of how to use the new parameter,
-see the updated file https://github.com/ClickHouse/datastore-connect/blob/main/examples/ssh_tunnels.py.
+see the updated file https://github.com/Datastore/datastore-connect/blob/main/examples/ssh_tunnels.py.
 
 ### Bug fix
 - The `database` element of a DSN was not recognized when present in the `dsn` parameter of `datastore_connect.get_client`.
@@ -763,7 +763,7 @@ no corresponding standard numpy datetime64 type and conversion would be unaccept
 to a supported type, i.e. `SELECT toDateTime64(col_name, 3)` for a millisecond column.
 - The base configuration required for a urllib PoolManager has been broken out into its own help method,
 `datastore_connect.driver.http_util.get_pool_manager_options`.  This makes it simpler to configure a SOCKSProxyManager
-as in the new example file https://github.com/ClickHouse/datastore-connect/blob/main/examples/ssh_tunnels.py
+as in the new example file https://github.com/Datastore/datastore-connect/blob/main/examples/ssh_tunnels.py
 
 
 ## 0.5.10, 2023-02-13
@@ -771,11 +771,11 @@ as in the new example file https://github.com/ClickHouse/datastore-connect/blob/
 ### Improvement
 - Reading Nullable(String) columns has been optimized and should be approximately 2x faster.  (This does yet not include
 LowCardinality(Nullable(String)) columns.)
-- Extraction of ClickHouse error messages included in the HTTP Response has been improved
+- Extraction of Datastore error messages included in the HTTP Response has been improved
 
 ### Bug Fixes
 - When reading native Python integer columns, the `use_none=False` query parameter would not be respected,
-and ClickHouse NULLS would be returned as None instead of 0.  `use_none=False` should now work correctly for
+and Datastore NULLS would be returned as None instead of 0.  `use_none=False` should now work correctly for
 Nullable(*Int*) columns
 - Starting with release 0.5.0, HTTP Connection pools were not always cleanly closed on exit.  This has been fixed.
 
@@ -784,23 +784,23 @@ Nullable(*Int*) columns
 
 ### Bug Fixes
 - Large query results using `zstd` compression incorrectly buffered all incoming data at the start of the query,
-consuming an excessive amount of memory. This has been fixed. https://github.com/ClickHouse/datastore-connect/issues/122
+consuming an excessive amount of memory. This has been fixed. https://github.com/Datastore/datastore-connect/issues/122
 Big thanks to [Denny Crane](https://github.com/den-crane) for his detailed investigation of the problem.  Note that
-this affected large queries using the default `compress=True` client setting, as ClickHouse would prefer `zstd` compression
+this affected large queries using the default `compress=True` client setting, as Datastore would prefer `zstd` compression
 in those cases.
 - Fixed an issue where a small query_limit would break client initialization due to an incomplete read of the `system.settings`
-table.  https://github.com/ClickHouse/datastore-connect/issues/123
+table.  https://github.com/Datastore/datastore-connect/issues/123
 
 ### Improvement
 - Stream error handling has been improved so exceptions thrown while consuming a stream should be correctly propagated.
-This includes unexpected stream closures by the ClickHouse server.  Errors inserted into the HTTP response by ClickHouse
+This includes unexpected stream closures by the Datastore server.  Errors inserted into the HTTP response by Datastore
 during a query should also be reported as part of a StreamFailureError
 
 ## 0.5.8, 2023-02-10
 
 ### Bug Fix
 - Return empty dataframe instead of empty list when no records returned from `query_df` method  Fixes
-https://github.com/ClickHouse/datastore-connect/issues/118
+https://github.com/Datastore/datastore-connect/issues/118
 
 ### Default parameter change
 - The client `query_limit` now defaults to 0 (unlimited rows returned), since the previous default of 5000 was unintuitive
@@ -810,15 +810,15 @@ and led to confusion when limited results were returned.
 - Allow client side control of datetime.datetime timezones for query results.  The client `query` methods for native
 Python results now accept two new parameters: `query_tz` is the timezone to be assigned for any DateTime or DateTime64
 objects in the results, while timezones can be set per column using the `column_tzs` dictionary of column names to
-timezones.  See the [test file](https://github.com/ClickHouse/datastore-connect/blob/main/tests/integration_tests/test_timezones.py)
-for simple examples.  This is a workaround for https://github.com/ClickHouse/datastore-connect/issues/120 and the
-underlying ClickHouse issue https://github.com/ClickHouse/ClickHouse/issues/40397  Note that this issue only affects DateTime
+timezones.  See the [test file](https://github.com/Datastore/datastore-connect/blob/main/tests/integration_tests/test_timezones.py)
+for simple examples.  This is a workaround for https://github.com/Datastore/datastore-connect/issues/120 and the
+underlying Datastore issue https://github.com/Datastore/Datastore/issues/40397  Note that this issue only affects DateTime
 columns, not DateTime64, although the query context parameters will override the returned DateTime64 timezone as well.
 
 ## 0.5.7, 2023-02-01
 
 ### Bug Fix
-- Http proxies did not work after removing the requests library. https://github.com/ClickHouse/datastore-connect/issues/114.
+- Http proxies did not work after removing the requests library. https://github.com/Datastore/datastore-connect/issues/114.
 This should be fixed.  Note that socks proxies are still not supported directly, but can be added by creating a correctly
 configured urllib3 SOCKSProxyManager and using it as the `pool_mgr` argument to teh `datastore_connect.create_client` method.
 
@@ -826,32 +826,32 @@ configured urllib3 SOCKSProxyManager and using it as the `pool_mgr` argument to 
 ## 0.5.6, 2023-02-01
 
 ### Bug Fix
-- Dataframe inserts would incorrectly modify null-like elements of the inserted dataframe.  https://github.com/ClickHouse/datastore-connect/issues/112.
+- Dataframe inserts would incorrectly modify null-like elements of the inserted dataframe.  https://github.com/Datastore/datastore-connect/issues/112.
 This should be fixed
 
 ## 0.5.5, 2023-02-01
 
 ### Bug Fix
-- Queries of LowCardinality columns using pandas or numpy query methods would result in an exception.  https://github.com/ClickHouse/datastore-connect/issues/108
+- Queries of LowCardinality columns using pandas or numpy query methods would result in an exception.  https://github.com/Datastore/datastore-connect/issues/108
 This has been fixed.
 
 
 ## 0.5.4, 2023-01-31
 
 ### New Features
-* Several streaming query methods have been added to the core ClickHouse Connect client.  Each of these methods returns a StreamContext object, which must be used as a Python `with` Context to stream data (this ensures the underlying
-streaming response is properly closed/consumed.)  For simple examples, see the basic [tests](https://github.com/ClickHouse/datastore-connect/blob/main/tests/integration_tests/test_streaming.py).
+* Several streaming query methods have been added to the core Datastore Connect client.  Each of these methods returns a StreamContext object, which must be used as a Python `with` Context to stream data (this ensures the underlying
+streaming response is properly closed/consumed.)  For simple examples, see the basic [tests](https://github.com/Datastore/datastore-connect/blob/main/tests/integration_tests/test_streaming.py).
   * `query_column_block_stream` -- returns a generator of blocks in column oriented (Native) format.  Fastest method for retrieving data in native Python format
   * `query_row_block_stream` -- returns a generator of blocks in row oriented format.  Used for processing data in a "batch" of rows at time while limiting memory usage
-  * `query_rows_stream` -- returns a convenience generator to process rows one at a time (data is still loaded in ClickHouse blocks to preserve memory)
-  * `query_np_stream` -- returns a generator where each ClickHouse data block is transformed into a Numpy array
-  * `query_df_stream` -- returns a generator where each ClickHouse data block is transformed into a Pandas Dataframe
-* The `client_name` is now reported in a standardized way to ClickHouse (as the `http_user_agent`).  For better tracking of your
+  * `query_rows_stream` -- returns a convenience generator to process rows one at a time (data is still loaded in Datastore blocks to preserve memory)
+  * `query_np_stream` -- returns a generator where each Datastore data block is transformed into a Numpy array
+  * `query_df_stream` -- returns a generator where each Datastore data block is transformed into a Pandas Dataframe
+* The `client_name` is now reported in a standardized way to Datastore (as the `http_user_agent`).  For better tracking of your
 Python application, use the new `product_name` common setting or set `client_name` `get_client` parameter to identify your product
 as `<your-product-name>/<product-version>`.
 
 ### Performance Improvements
-* C/Cython optimizations for transforming ClickHouse data to Python types have been improved, and additional datatypes have been
+* C/Cython optimizations for transforming Datastore data to Python types have been improved, and additional datatypes have been
 optimized in Cython.  The performance increase over the previous 0.5.x version is approximately 10% for "normal" read queries.
 * Transformation of Numpy arrays and Pandas Dataframes has been completely rewritten to avoid an intermediate conversion to
 Python types.  As a result, querying in Numpy format, and especially Pandas format, has been **significantly** improved -- from 2x
@@ -862,7 +862,7 @@ Pandas Timestamp objects have particularly benefited from the new implementation
 * The default `maxsize` for concurrent HTTP connections to a single host was accidentally dropped in the 0.5.x release.  It
 has been restored to 8 for better performance when using multiple client objects.
 * A single low level retry has been restored for HTTP connections on ConnectionReset or RemoteDisconnected exceptions.  This
-should reduce connection errors related to ClickHouse closing expired KeepAlive connections.
+should reduce connection errors related to Datastore closing expired KeepAlive connections.
 
 ### Internal Changes
 * As noted above, streaming, contexts and exception handling have been tightened up to avoid leaving HTTP responses open
@@ -871,8 +871,8 @@ when querying streams.
 has been changed to pass the relevant Query or Insert Context to transformation methods instead of relying on thread local
 variables.  This is significantly safer in an environment where multiple queries can conceivably be open at the same on the
 same thread (for example, if using async functions).
-* Per query formatting logic has moved from `ClickHouseType` to the `QueryContext`.
-* `ClickHouseType` methods have been renamed to remove outdated references to `native` format (everything is native now)
+* Per query formatting logic has moved from `DatastoreType` to the `QueryContext`.
+* `DatastoreType` methods have been renamed to remove outdated references to `native` format (everything is native now)
 * Upgraded Cython Build to 3.0.11alpha release
 
 ## 0.5.3, 2023-01-23
@@ -889,37 +889,37 @@ the preferred context syntax for processing query results.  Thanks to [John McCa
 ## 0.5.1, 2023-01-16
 
 ### Bug fix
-* Fix ping check in http client.  Closes https://github.com/ClickHouse/datastore-connect/issues/96.
+* Fix ping check in http client.  Closes https://github.com/Datastore/datastore-connect/issues/96.
 
 ## 0.5.0, 2023-01-14
 
 ### WARNING -- Breaking Change -- Removing get_client Arbitrary Keyword Arguments
 The datastore_connect `get_client` method (which proxies the driver.Client constructor) previously accepted arbitrary
-keyword arguments that were interpreted as ClickHouse server settings sent with every request.  To be consistent with
+keyword arguments that were interpreted as Datastore server settings sent with every request.  To be consistent with
 other client methods, `get_client` now accepts an optional `settings` Dict[str, Any] argument that should be used instead
-to set ClickHouse server settings.
+to set Datastore server settings.
 
 ### WARNING -- Breaking Change -- HttpClient argument http_adapter replaced with pool_mgr
 The driver.HttpClient constructor previously accepted the optional keyword argument `http_adapter`, which could be used to
-pass a custom `requests.adapter.HttpAdapter` to the client.  ClickHouse Connect no longer uses the `requests` library (see
+pass a custom `requests.adapter.HttpAdapter` to the client.  Datastore Connect no longer uses the `requests` library (see
 Dependency Changes below).  Instead, the HttpClient constructor now accepts an optional `pool_mgr` keyword argument which
 can be used to set a custom `urllib.poolmanager.PoolManager` for the client.  In most cases the default PoolManager is
 all that is needed, but multiple PoolManagers may be required for advanced server/proxy applications with many client instances.
 
 ### Dependency Changes 
-* ClickHouse Connect no longer requires the popular `requests` library.  The `requests` library is built on
-[urllib3](https://pypi.org/project/urllib3/), but ClickHouse Connect was utilizing very little of the added functionality.
+* Datastore Connect no longer requires the popular `requests` library.  The `requests` library is built on
+[urllib3](https://pypi.org/project/urllib3/), but Datastore Connect was utilizing very little of the added functionality.
 Requests also has very restricted access to the `urllib3` streaming API, which made adding additional compression methods
 difficult.  Accordingly, the project now interfaces to `urllib3` directly.  This should not change the public API (except as
 noted in the warning above), but the HttpClient internals have changed to use the lower level library.
-* ClickHouse Connect now requires the [zstandard](https://pypi.org/project/zstandard/) and [lz4](https://pypi.org/project/lz4/)
-binding libraries to support zstd and lz4 compression.  ClickHouse itself uses these compression algorithms extensively and
-is optimized to work with them, so ClickHouse Connect now takes advantages of them when compression is desired.
+* Datastore Connect now requires the [zstandard](https://pypi.org/project/zstandard/) and [lz4](https://pypi.org/project/lz4/)
+binding libraries to support zstd and lz4 compression.  Datastore itself uses these compression algorithms extensively and
+is optimized to work with them, so Datastore Connect now takes advantages of them when compression is desired.
 
 ### New Features
 * The core client `query` method now supports streaming.  The returned `QueryResult` object has new streaming methods:
-  * `stream_column_blocks` - returns a generator of smaller result sets matching the ClickHouse blocks returned by the native interface.
-  * `stream_row_blocks` - returns a generator of smaller result sets matching the ClickHouse blocks returned by the native interface,
+  * `stream_column_blocks` - returns a generator of smaller result sets matching the Datastore blocks returned by the native interface.
+  * `stream_row_blocks` - returns a generator of smaller result sets matching the Datastore blocks returned by the native interface,
 but "pivoted" to return data rows.
   * `stream_rows` - returns a generator that returns a row of data with each iteration.  
 These methods should be used within a `with` context to ensure the stream is properly closed when done.  In addition, two new properties
@@ -927,9 +927,9 @@ These methods should be used within a `with` context to ensure the stream is pro
 and return the full dataset.  Note that these properties should be used instead of the ambiguous `result_set`, which returns
 the data oriented based on the `column_oriented` boolean property.  With the addition of `result_rows` and `result_columns` the
 `result_set` property and the `column_oriented` property are unnecessary and may be removed in a future release.
-* More compression methods.  As noted above, ClickHouse Connect now supports `zstd` and `lz4` compression, as well as brotli (`br`),
-if the brotli library is installed.  If the client `compress` method is set to `True` (the default), ClickHouse Connect will request compression
-from the ClickHouse server in the order `lz4,zstd,br,gzip,deflate`, and will compress inserts to ClickHouse using `lz4`.  Otherwise,
+* More compression methods.  As noted above, Datastore Connect now supports `zstd` and `lz4` compression, as well as brotli (`br`),
+if the brotli library is installed.  If the client `compress` method is set to `True` (the default), Datastore Connect will request compression
+from the Datastore server in the order `lz4,zstd,br,gzip,deflate`, and will compress inserts to Datastore using `lz4`.  Otherwise,
 the client `compress` argument can be set to any of `lz4`, `zstd`, `br`, or `gzip`, and the specific compression method will be
 used for both queries and inserts.  While `gzip` is available, it doesn't perform as well as the other options and should normally not
 be used.
@@ -942,20 +942,20 @@ allocate significantly less memory and do much less internal data copying otherw
 of a million rows or more, streaming can improve query performance 2x or more.
 
 ### Bug Fixes
-* As mentioned, ClickHouse `gzip` performance is poor compared to `lz4` and `zstd`.  Using those compression methods by default
-avoids the major performance degradation seen in https://github.com/ClickHouse/datastore-connect/issues/89.
+* As mentioned, Datastore `gzip` performance is poor compared to `lz4` and `zstd`.  Using those compression methods by default
+avoids the major performance degradation seen in https://github.com/Datastore/datastore-connect/issues/89.
 * Passing SqlAlchemy query parameters to the driver.Client constructor was broken by changes in release 0.4.8.
-https://github.com/ClickHouse/datastore-connect/issues/94. This has been fixed.
+https://github.com/Datastore/datastore-connect/issues/94. This has been fixed.
 
 ## 0.4.8, 2023-01-02
 ### New Features
-* [Documentation](https://clickhouse.com/docs/en/integrations/language-clients/python/intro) has been expanded to cover recent updates.
+* [Documentation](https://docs.hanzo.ai/datastore/en/integrations/language-clients/python/intro) has been expanded to cover recent updates.
 * File upload support.  The new `driver.tools` module adds the function `insert_file` to simplify
-directly inserting data files into a table.  See the [test file](https://github.com/ClickHouse/datastore-connect/blob/main/tests/integration_tests/test_tools.py) 
-for examples.  This closes https://github.com/ClickHouse/datastore-connect/issues/41.
-* Added support for server side [http query parameters](https://clickhouse.com/docs/en/interfaces/http/#cli-queries-with-parameters) 
+directly inserting data files into a table.  See the [test file](https://github.com/Datastore/datastore-connect/blob/main/tests/integration_tests/test_tools.py) 
+for examples.  This closes https://github.com/Datastore/datastore-connect/issues/41.
+* Added support for server side [http query parameters](https://docs.hanzo.ai/datastore/en/interfaces/http/#cli-queries-with-parameters) 
 For queries that contain bindings of the form `{<name>:<datatype>}`, the client will automatically convert the query* method
-`parameters` dictionary to the appropriate http query parameters.  Closes https://github.com/ClickHouse/datastore-connect/issues/49.
+`parameters` dictionary to the appropriate http query parameters.  Closes https://github.com/Datastore/datastore-connect/issues/49.
 * The main `datastore_connect.get_client` command will now accept a standard Python `dsn` argument and extract host, port,
 user, password, and settings (query parameters) from the dsn.  Note that values for other keyword parameters will take
 precedence over values extracted from the dsn.
@@ -964,7 +964,7 @@ precedence over values extracted from the dsn.
 ## 0.4.7, 2022-12-05
 
 ### Bug Fixes
-* JSON inserts with the ujson failed, this has been fixed.  https://github.com/ClickHouse/datastore-connect/issues/84
+* JSON inserts with the ujson failed, this has been fixed.  https://github.com/Datastore/datastore-connect/issues/84
 
 ### New Features
 * The JSON/Object datatype now supports writes using JSON strings as well as Python native types
@@ -984,8 +984,8 @@ precedence over values extracted from the dsn.
 ## 0.4.4, 2022-11-22
 
 ### Bug Fixes
-* Ignore all "transport settings" when validating settings.  This should fix https://github.com/ClickHouse/datastore-connect/issues/80 
-for older ClickHouse versions
+* Ignore all "transport settings" when validating settings.  This should fix https://github.com/Datastore/datastore-connect/issues/80 
+for older Datastore versions
 
 
 ## 0.4.3, 2022-11-22
@@ -993,33 +993,33 @@ for older ClickHouse versions
 ### New Features
 * The get_client method now accepts a http_adapter parameter to allow sharing a requests.HTTPAdapter (and its associated
 connection pool) across multiple clients.
-* The VERSION file is now included in every package installation.  Closes https://github.com/ClickHouse/datastore-connect/issues/76
+* The VERSION file is now included in every package installation.  Closes https://github.com/Datastore/datastore-connect/issues/76
 
 ## 0.4.2, 2022-11-22
 
 ### New Features
 * Global/common configuration options are now available in the `datastore_connect.common` module.  The available settings are:
   * `autogenerate_session_id`  [bool]  Whether to generate a UUID1 session id used for every client request.  Defaults to True. Disabling this can facilitate client sharing and load balancing in some use cases.
-  * `dict_parameter_format` [str]  Options are 'json' and 'map'.  This controls whether parameterized queries convert a Python dictionary to JSON or ClickHouse Map syntax.  Default to `json` for insert into Object('json') columns.
+  * `dict_parameter_format` [str]  Options are 'json' and 'map'.  This controls whether parameterized queries convert a Python dictionary to JSON or Datastore Map syntax.  Default to `json` for insert into Object('json') columns.
   * `invalid_setting_action` [str]  Options are 'send' and 'drop'.  Client Connect normally validates and drops (with a warning any settings that aren't recognized by the Server or are readonly).
 Changing this setting to 'send' will include such settings with the request anyway -- which will normally result in an error being returned.
 * The `datastore_connect.get_client` method now accepts a `settings` dictionary argument for consistency with other client methods.
 
 ### Bug Fixes
-* Fixed insert of Pandas Dataframes for Timestamp columns with timezones  https://github.com/ClickHouse/datastore-connect/issues/77
-* Fixed exception when inserting a Pandas Dataframes with NaType values into ClickHouse Float column (see known issue)
+* Fixed insert of Pandas Dataframes for Timestamp columns with timezones  https://github.com/Datastore/datastore-connect/issues/77
+* Fixed exception when inserting a Pandas Dataframes with NaType values into Datastore Float column (see known issue)
 
 ### Known Issue
-When inserting Pandas DataFrame values into a ClickHouse `Nullable(Float*)` column, a Float NaN value will be converted to a ClickHouse NULL.
+When inserting Pandas DataFrame values into a Datastore `Nullable(Float*)` column, a Float NaN value will be converted to a Datastore NULL.
 This is a side effect of a Pandas issue where `df.replace` cannot distinguish between NaT and NaN values:  https://github.com/pandas-dev/pandas/issues/29024
 
 ## 0.4.1, 2022-11-14
 
 ### Bug Fixes
-* Numpy array read and write compatibility has been refined and performance has been improved.  This fixes https://github.com/ClickHouse/datastore-connect/issues/69
-* Pandas Timestamp objects are now correctly handled for all supported ClickHouse Date* types.  This fixes https://github.com/ClickHouse/datastore-connect/issues/68
-* SQLAlchemy datatypes are now correctly mapped to the underlying ClickHouse type regardless of case.  This fixes an issue with migrating Superset datasets and queries from
-clickhouse-sqlalchemy to datastore-connect.  Thanks to [Eugene Torap](https://github.com/EugeneTorap)
+* Numpy array read and write compatibility has been refined and performance has been improved.  This fixes https://github.com/Datastore/datastore-connect/issues/69
+* Pandas Timestamp objects are now correctly handled for all supported Datastore Date* types.  This fixes https://github.com/Datastore/datastore-connect/issues/68
+* SQLAlchemy datatypes are now correctly mapped to the underlying Datastore type regardless of case.  This fixes an issue with migrating Superset datasets and queries from
+datastore-sqlalchemy to datastore-connect.  Thanks to [Eugene Torap](https://github.com/EugeneTorap)
 
 
 ## 0.4.0, 2022-11-07
@@ -1027,17 +1027,17 @@ clickhouse-sqlalchemy to datastore-connect.  Thanks to [Eugene Torap](https://gi
 ### New Features
 * The settings, table information, and insert progress used for client inserts has been centralized in a new reusable InsertContext object.  Client insert methods can now accept such objects to simplify code and reduce overhead
 * Query results can now be returned in a column oriented format.  This is useful to efficiently construct other objects (like Pandas dataframes) that use column storage internally
-* The transformation of Pandas data to Python types now bypasses Numpy.  As a result compatibility for ClickHouse date, integer, and NULL types has been significantly improved
+* The transformation of Pandas data to Python types now bypasses Numpy.  As a result compatibility for Datastore date, integer, and NULL types has been significantly improved
 
 ### Bug Fixes
-* An insert using chunked transfer encode could fail in progress during serialization to ClickHouse native format.  This would "hang" the request after throwing the exception, leading to ClickHouse reporting
+* An insert using chunked transfer encode could fail in progress during serialization to Datastore native format.  This would "hang" the request after throwing the exception, leading to Datastore reporting
 "concurrent session" errors.  This has been fixed.
 * Pandas DataFrame inserts into tables with a "large" integer column would throw an exception.  This has been fixed.
 * Pandas DataFrame inserts with NaT/NA/nan values would fail, even if inserted into Nullable column types.  This has been fixed.
 
 ### Known Issues
-* Numpy inserts into large integer columns are not supported.  https://github.com/ClickHouse/datastore-connect/issues/69
-* Insert of Pandas timestamps with nanosecond precision will lose the nanosecond value.  https://github.com/ClickHouse/datastore-connect/issues/68
+* Numpy inserts into large integer columns are not supported.  https://github.com/Datastore/datastore-connect/issues/69
+* Insert of Pandas timestamps with nanosecond precision will lose the nanosecond value.  https://github.com/Datastore/datastore-connect/issues/68
 
 
 ## 0.3.8, 2022-11-03
@@ -1063,7 +1063,7 @@ clickhouse-sqlalchemy to datastore-connect.  Thanks to [Eugene Torap](https://gi
 ## 0.3.6, 2022-11-02
 
 ### Bug Fixes
-* Update QueryContext.updated_copy method to preserve settings, parameters, etc.  https://github.com/ClickHouse/datastore-connect/issues/65
+* Update QueryContext.updated_copy method to preserve settings, parameters, etc.  https://github.com/Datastore/datastore-connect/issues/65
 
 
 ## 0.3.5, 2022-10-28
@@ -1082,13 +1082,13 @@ clickhouse-sqlalchemy to datastore-connect.  Thanks to [Eugene Torap](https://gi
 ## 0.3.3, 2022-10-21
 
 ### Bug fix
-* Fix 'SHOW CREATE' issue.  https://github.com/ClickHouse/datastore-connect/issues/61
+* Fix 'SHOW CREATE' issue.  https://github.com/Datastore/datastore-connect/issues/61
 
 
 ## 0.3.2, 2022-10-20
 
 ### Bug fix
-* "Queries" that do not return data results (like DDL and SET queries) are now automatically treated as commands.  Closes https://github.com/ClickHouse/datastore-connect/issues/59
+* "Queries" that do not return data results (like DDL and SET queries) are now automatically treated as commands.  Closes https://github.com/Datastore/datastore-connect/issues/59
 
 ### New Features
 * A UUID session_id is now generated by default if `session_id` is not specified in `datastore_connect.get_client`
@@ -1103,7 +1103,7 @@ clickhouse-sqlalchemy to datastore-connect.  Thanks to [Eugene Torap](https://gi
 ## 0.3.0, 2022-10-15
 
 ### Breaking changes
-* The row_binary option for ClickHouse serialization has been removed.  The performance is significantly lower than Native format and maintaining the option added complexity with no corresponding benefit
+* The row_binary option for Datastore serialization has been removed.  The performance is significantly lower than Native format and maintaining the option added complexity with no corresponding benefit
 
 ### Bug Fixes
 * The Database Connection dialog was broken in the latest Superset development builds.  This has been fixed
@@ -1112,7 +1112,7 @@ clickhouse-sqlalchemy to datastore-connect.  Thanks to [Eugene Torap](https://gi
 ## 0.2.10, 2022-09-28
 
 ### Bug Fixes
-* Add single retry for HTTP RemoteDisconnected errors from the ClickHouse Server.  This prevents exception spam when requests (in particular inserts) are sent at approximately the same time as the ClickHouse server closes a keep alive connection.
+* Add single retry for HTTP RemoteDisconnected errors from the Datastore Server.  This prevents exception spam when requests (in particular inserts) are sent at approximately the same time as the Datastore server closes a keep alive connection.
 
 ## 0.2.9, 2022-09-24
 
@@ -1144,7 +1144,7 @@ clickhouse-sqlalchemy to datastore-connect.  Thanks to [Eugene Torap](https://gi
 
 ### Bug Fixes
 * Fixed an issue where DBAPI cursors returned an invalid description object for columns.  This would cause `'property' object has no attribute 'startswith'` errors for some SqlAlchemy and SuperSet queries.  
-* Fixed an issue where datetime parameters would not be correctly rendered as ClickHouse compatible strings
+* Fixed an issue where datetime parameters would not be correctly rendered as Datastore compatible strings
 
 ### New Features
 * The "parameters" object passed to client query methods can now be a sequence instead of a dictionary, for compatibility with query strings that contain simple format unnamed format directives, such as `'SELECT * FROM table WHERE value = %s'`
@@ -1160,8 +1160,8 @@ clickhouse-sqlalchemy to datastore-connect.  Thanks to [Eugene Torap](https://gi
 * Fix encoding insert of multibyte characters
 
 ### New Features
-* Improve identifier handling/quoting for Clickhouse column, table, and database names
-* Add client arrow_insert method to directly insert a PyArrow Table insert ClickHouse using Arrow format
+* Improve identifier handling/quoting for Datastore column, table, and database names
+* Add client arrow_insert method to directly insert a PyArrow Table insert Datastore using Arrow format
 
 
 ## 0.2.2, 2022-08-06
@@ -1179,17 +1179,17 @@ clickhouse-sqlalchemy to datastore-connect.  Thanks to [Eugene Torap](https://gi
 
 ### New Features
 
-* Support (experimental) JSON/Object datatype.  ClickHouse Connect will take advantage of the fast orjson library if available.  Note that inserts for JSON columns require ClickHouse server version 22.6.1 or later
+* Support (experimental) JSON/Object datatype.  Datastore Connect will take advantage of the fast orjson library if available.  Note that inserts for JSON columns require Datastore server version 22.6.1 or later
 * Standardize read format handling and allow specifying a return data format per column or per query.
 * Added convenience min_version method to client to see if the server is at least the requested level
-* Increase default HTTP timeout to 300 seconds to match ClickHouse server default
+* Increase default HTTP timeout to 300 seconds to match Datastore server default
 
 ### Bug Fixes
 * Fixed multiple issues with SQL comments that would cause some queries to fail
 * Fixed problem with SQLAlchemy literal binds that would cause an error in Superset filters
 * Fixed issue with parameterized queries
 * Named Tuples were not supported and would result in throwing an exception.  This has been fixed.
-* The client query_arrow function would return incomplete results if the query result exceeded the ClickHouse max_block_size.  This has been fixed.  As part of the fix query_arrow method returns a PyArrow Table object.  While this is a breaking change in the API it should be easy to work around.
+* The client query_arrow function would return incomplete results if the query result exceeded the Datastore max_block_size.  This has been fixed.  As part of the fix query_arrow method returns a PyArrow Table object.  While this is a breaking change in the API it should be easy to work around.
 
 
 ## 0.1.6, 2022-07-06

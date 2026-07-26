@@ -8,14 +8,14 @@ import datastore_connect
 #  `server_host_name` argument to the get_client method
 
 #  This example uses the following ssh tunnel command
-#  ssh -f -N -L 1443:play.clickhouse.com:443 <jump host user>@<jump host> -i <ssh private key file>
+#  ssh -f -N -L 1443:play.hanzo.ai:443 <jump host user>@<jump host> -i <ssh private key file>
 def direct_tunnel():
     client = datastore_connect.get_client(host='localhost',
                                            user='play',
-                                           password='clickhouse',
+                                           password='datastore',
                                            port=1443,
                                            secure=True,
-                                           server_host_name='play.clickhouse.com')
+                                           server_host_name='play.hanzo.ai')
     print(client.query('SHOW DATABASES').result_set)
     client.close()
 
@@ -32,28 +32,28 @@ except ImportError:
 
 def create_tunnel():
     server = sshtunnel.SSHTunnelForwarder(
-        (os.environ.get('CLICKHOUSE_TUNNEL_JUMP_HOST'), 22),  # Create an ssh tunnel to your jump host/port
-        ssh_username=os.environ.get('CLICKHOUSE_TUNNEL_USER', 'ubuntu'),  # Set the user for the remote/jump host
-        ssh_pkey=os.environ.get('CLICKHOUSE_TUNNEL_KEY_FILE', '~/.ssh/id_rsa'),  # The private key file to use
-        ssh_private_key_password=os.environ.get('CLICKHOUSE_TUNNEL_KEY_PASSWORD', None),  # Private key password
-        remote_bind_address=('play.clickhouse.com', 443),  # The ClickHouse server and port you want to reach
+        (os.environ.get('DATASTORE_TUNNEL_JUMP_HOST'), 22),  # Create an ssh tunnel to your jump host/port
+        ssh_username=os.environ.get('DATASTORE_TUNNEL_USER', 'ubuntu'),  # Set the user for the remote/jump host
+        ssh_pkey=os.environ.get('DATASTORE_TUNNEL_KEY_FILE', '~/.ssh/id_rsa'),  # The private key file to use
+        ssh_private_key_password=os.environ.get('DATASTORE_TUNNEL_KEY_PASSWORD', None),  # Private key password
+        remote_bind_address=('play.hanzo.ai', 443),  # The Datastore server and port you want to reach
         local_bind_address=('localhost', 1443)  # The local address and port to bind the tunnel to
     )
     server.start()
 
     client = datastore_connect.get_client(host='localhost',
                                            user='play',
-                                           password='clickhouse',
+                                           password='datastore',
                                            port=1443,
                                            secure=True,
                                            verify=True,
-                                           server_host_name='play.clickhouse.com')
+                                           server_host_name='play.hanzo.ai')
     print(client.query('SHOW DATABASES').result_set)
     client.close()
     server.close()
 
 
-#  An example of how to use a "dynamic/SOCKS5" ssh tunnel to reach a ClickHouse server
+#  An example of how to use a "dynamic/SOCKS5" ssh tunnel to reach a Datastore server
 #  The ssh tunnel for this example was created with the following command:
 #  ssh -f -N -D 1443 <jump host user>@<jump host> -i <ssh private key file>
 
@@ -70,9 +70,9 @@ def socks_proxy():
     options = httputil.get_pool_manager_options()
     proxy_manager = SOCKSProxyManager('socks5h://localhost:1443', **options)
 
-    client = datastore_connect.get_client(host='play.clickhouse.com',
+    client = datastore_connect.get_client(host='play.hanzo.ai',
                                            user='play',
-                                           password='clickhouse',
+                                           password='datastore',
                                            port=443,
                                            pool_mgr=proxy_manager)
 

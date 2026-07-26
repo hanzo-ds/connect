@@ -16,7 +16,7 @@ MAX_DATA_ROWS = 40
 def test_query_fuzz(test_client: Client, test_table_engine: str):
     if not test_client.min_version('21'):
         pytest.skip(f'flatten_nested setting not supported in this server version {test_client.server_version}')
-    test_runs = int(os.environ.get('CLICKHOUSE_CONNECT_TEST_FUZZ', '250'))
+    test_runs = int(os.environ.get('DATASTORE_CONNECT_TEST_FUZZ', '250'))
     test_client.apply_server_timezone = True
     try:
         for _ in range(test_runs):

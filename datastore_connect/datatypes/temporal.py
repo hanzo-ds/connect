@@ -3,7 +3,7 @@ import pytz
 from datetime import date, datetime, tzinfo
 from typing import Union, Sequence, MutableSequence, Any
 
-from datastore_connect.datatypes.base import TypeDef, ClickHouseType
+from datastore_connect.datatypes.base import TypeDef, DatastoreType
 from datastore_connect.driver.common import write_array, np_date_types, int_size, first_value
 from datastore_connect.driver.exceptions import ProgrammingError
 from datastore_connect.driver.ctypes import data_conv, numpy_conv
@@ -16,7 +16,7 @@ epoch_start_date = date(1970, 1, 1)
 epoch_start_datetime = datetime(1970, 1, 1)
 
 
-class Date(ClickHouseType):
+class Date(DatastoreType):
     _array_type = 'H'
     np_type = 'datetime64[D]'
     nano_divisor = 86400 * 1000000000
@@ -79,7 +79,7 @@ class Date32(Date):
         return data_conv.read_date32_col(source, num_rows)
 
 
-class DateTimeBase(ClickHouseType, registered=False):
+class DateTimeBase(DatastoreType, registered=False):
     __slots__ = ('tzinfo',)
     valid_formats = 'native', 'int'
     python_type = datetime

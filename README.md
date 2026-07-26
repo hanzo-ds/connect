@@ -1,6 +1,6 @@
-## ClickHouse Connect
+## Datastore Connect
 
-A high performance core database driver for connecting ClickHouse to Python, Pandas, and Superset
+A high performance core database driver for connecting Datastore to Python, Pandas, and Superset
 
 * Pandas DataFrames
 * Numpy Arrays
@@ -8,7 +8,7 @@ A high performance core database driver for connecting ClickHouse to Python, Pan
 * Superset Connector
 * SQLAlchemy 1.3 and 1.4 (limited feature set)
 
-ClickHouse Connect currently uses the ClickHouse HTTP interface for maximum compatibility.
+Datastore Connect currently uses the Datastore HTTP interface for maximum compatibility.
 
 ### Installation
 
@@ -16,30 +16,30 @@ ClickHouse Connect currently uses the ClickHouse HTTP interface for maximum comp
 pip install datastore-connect
 ```
 
-ClickHouse Connect requires Python 3.8 or higher.
+Datastore Connect requires Python 3.8 or higher.
 
 ### Superset Connectivity
 
-ClickHouse Connect is fully integrated with Apache Superset. Previous versions of ClickHouse Connect utilized a
+Datastore Connect is fully integrated with Apache Superset. Previous versions of Datastore Connect utilized a
 dynamically loaded Superset Engine Spec, but as of Superset v2.1.0 the engine spec was incorporated into the main
 Apache Superset project and removed from datastore-connect in v0.6.0. If you have issues connecting to earlier
 versions of Superset, please use datastore-connect v0.5.25.
 
 When creating a Superset Data Source, either use the provided connection dialog, or a SqlAlchemy DSN in the form
-`clickhousedb://{username}:{password}@{host}:{port}`.
+`datastoredb://{username}:{password}@{host}:{port}`.
 
 ### SQLAlchemy Implementation
 
-ClickHouse Connect incorporates a minimal SQLAlchemy implementation (without any ORM features) for compatibility with
+Datastore Connect incorporates a minimal SQLAlchemy implementation (without any ORM features) for compatibility with
 Superset. It has only been tested against SQLAlchemy versions 1.3.x and 1.4.x, and is unlikely to work with more
 complex SQLAlchemy applications.
 
 ### Asyncio Support
 
-ClickHouse Connect provides an async wrapper, so that it is possible to use the client in an `asyncio` environment.
+Datastore Connect provides an async wrapper, so that it is possible to use the client in an `asyncio` environment.
 See the [run_async example](./examples/run_async.py) for more details.
 
 ### Complete Documentation
 
-The documentation for ClickHouse Connect has moved to
-[ClickHouse Docs](https://clickhouse.com/docs/integrations/python) 
+The documentation for Datastore Connect has moved to
+[Datastore Docs](https://docs.hanzo.ai/datastore/integrations/python) 

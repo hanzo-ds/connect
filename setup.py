@@ -44,15 +44,15 @@ def run_setup(try_c: bool = True):
 
     setup(
         name='datastore-connect',
-        author='ClickHouse Inc.',
-        author_email='clients@clickhouse.com',
-        keywords=['clickhouse', 'superset', 'sqlalchemy', 'http', 'driver'],
-        description='ClickHouse Database Core Driver for Python, Pandas, and Superset',
+        author='Datastore Inc.',
+        author_email='clients@hanzo.ai',
+        keywords=['datastore', 'superset', 'sqlalchemy', 'http', 'driver'],
+        description='Datastore Database Core Driver for Python, Pandas, and Superset',
         version=version,
         long_description=long_desc,
         long_description_content_type='text/markdown',
         package_data={'datastore_connect': ['VERSION', 'py.typed']},
-        url='https://github.com/ClickHouse/datastore-connect',
+        url='https://github.com/Datastore/datastore-connect',
         packages=find_packages(exclude=['tests*']),
         python_requires='~=3.8',
         license='Apache License 2.0',
@@ -73,8 +73,8 @@ def run_setup(try_c: bool = True):
         },
         tests_require=['pytest'],
         entry_points={
-            'sqlalchemy.dialects': ['clickhousedb.connect=datastore_connect.cc_sqlalchemy.dialect:ClickHouseDialect',
-                                    'clickhousedb=datastore_connect.cc_sqlalchemy.dialect:ClickHouseDialect']
+            'sqlalchemy.dialects': ['datastoredb.connect=datastore_connect.cc_sqlalchemy.dialect:DatastoreDialect',
+                                    'datastoredb=datastore_connect.cc_sqlalchemy.dialect:DatastoreDialect']
         },
         classifiers=[
             'Development Status :: 4 - Beta',

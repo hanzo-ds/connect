@@ -5,4 +5,4 @@
 Delete items not relevant to your PR:
 - [ ] Unit and integration tests covering the common scenarios were added
 - [ ] A human-readable description of the changes was provided to include in CHANGELOG
-- [ ] For significant changes, documentation in https://github.com/ClickHouse/clickhouse-docs was updated with further explanations or tutorials
+- [ ] For significant changes, documentation in https://github.com/Datastore/datastore-docs was updated with further explanations or tutorials

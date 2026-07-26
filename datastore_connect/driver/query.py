@@ -59,21 +59,21 @@ class QueryContext(BaseQueryContext):
 
         :param query:  Query string with Python style format value replacements
         :param parameters: Optional dictionary of substitution values
-        :param settings: Optional ClickHouse settings for the query
-        :param query_formats: Optional dictionary of query formats with the key of a ClickHouse type name
+        :param settings: Optional Datastore settings for the query
+        :param query_formats: Optional dictionary of query formats with the key of a Datastore type name
           (with * wildcards) and a value of valid query formats for those types.
           The value 'encoding' can be sent to change the expected encoding for this query, with a value of
           the desired encoding such as `latin-1`
         :param column_formats: Optional dictionary of column specific formats.  The key is the column name,
           The value is either the format for the data column (such as 'string' for a UUID column) or a
-          second level "format" dictionary of a ClickHouse type name and a value of query formats.  This
+          second level "format" dictionary of a Datastore type name and a value of query formats.  This
           secondary dictionary can be used for nested column types such as Tuples or Maps
         :param encoding: Optional string encoding for this query, such as 'latin-1'
         :param column_formats: Optional dictionary
-        :param use_none: Use a Python None for ClickHouse NULL values in nullable columns.  Otherwise the default
+        :param use_none: Use a Python None for Datastore NULL values in nullable columns.  Otherwise the default
           value of the column (such as 0 for numbers) will be returned in the result_set
-        :param max_str_len Limit returned ClickHouse String values to this length, which allows a Numpy
-          structured array even with ClickHouse variable length String columns.  If 0, Numpy arrays for
+        :param max_str_len Limit returned Datastore String values to this length, which allows a Numpy
+          structured array even with Datastore variable length String columns.  If 0, Numpy arrays for
           String columns will always be object arrays
         :param query_tz  Either a string or a pytz tzinfo object.  (Strings will be converted to tzinfo objects).
           Values for any DateTime or DateTime64 column in the query will be converted to Python datetime.datetime
@@ -350,7 +350,7 @@ def remove_sql_comments(sql: str) -> str:
     """
     Remove SQL comments.  This is useful to determine the type of SQL query, such as SELECT or INSERT, but we
     don't fully trust it to correctly ignore weird quoted strings, and other edge cases, so we always pass the
-    original SQL to ClickHouse (which uses a full-fledged AST/ token parser)
+    original SQL to Datastore (which uses a full-fledged AST/ token parser)
     :param sql:  SQL query
     :return: SQL Query without SQL comments
     """

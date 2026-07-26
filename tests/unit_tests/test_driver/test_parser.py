@@ -8,8 +8,8 @@ def test_parse_callable():
     assert parse_callable("Enum4('v1' = 5) other stuff") == ('Enum4', ("'v1'= 5",), 'other stuff')
     assert parse_callable('BareThing') == ('BareThing', (), '')
     assert parse_callable('Tuple(Tuple (String), Int32)') == ('Tuple', ('Tuple(String)', 'Int32'), '')
-    assert parse_callable("ReplicatedMergeTree('/clickhouse/tables/test', '{replica'}) PARTITION BY key")\
-           == ('ReplicatedMergeTree', ("'/clickhouse/tables/test'", "'{replica'}"), 'PARTITION BY key')
+    assert parse_callable("ReplicatedMergeTree('/datastore/tables/test', '{replica'}) PARTITION BY key")\
+           == ('ReplicatedMergeTree', ("'/datastore/tables/test'", "'{replica'}"), 'PARTITION BY key')
 
 
 def test_parse_enum():

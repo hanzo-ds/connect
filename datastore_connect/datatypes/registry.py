@@ -1,19 +1,19 @@
 import logging
 
 from typing import Tuple, Dict
-from datastore_connect.datatypes.base import TypeDef, ClickHouseType, type_map
+from datastore_connect.datatypes.base import TypeDef, DatastoreType, type_map
 from datastore_connect.driver.exceptions import InternalError
 from datastore_connect.driver.parser import parse_enum, parse_callable, parse_columns
 
 logger = logging.getLogger(__name__)
-type_cache: Dict[str, ClickHouseType] = {}
+type_cache: Dict[str, DatastoreType] = {}
 
 
 def parse_name(name: str) -> Tuple[str, str, TypeDef]:
     """
-    Converts a ClickHouse type name into the base class and the definition (TypeDef) needed for any
+    Converts a Datastore type name into the base class and the definition (TypeDef) needed for any
     additional instantiation
-    :param name: ClickHouse type name as returned by clickhouse
+    :param name: Datastore type name as returned by datastore
     :return: The original base name (before arguments), the full name as passed in and the TypeDef object that
      captures any additional arguments
     """
@@ -47,15 +47,15 @@ def parse_name(name: str) -> Tuple[str, str, TypeDef]:
         try:
             base, values, _ = parse_callable(base)
         except IndexError:
-            raise InternalError(f'Can not parse ClickHouse data type: {name}') from None
+            raise InternalError(f'Can not parse Datastore data type: {name}') from None
     return base, name, TypeDef(tuple(wrappers), keys, values)
 
 
-def get_from_name(name: str) -> ClickHouseType:
+def get_from_name(name: str) -> DatastoreType:
     """
-    Returns the ClickHouseType instance parsed from the ClickHouse type name.  Instances are cached
-    :param name: ClickHouse type name as returned by ClickHouse in WithNamesAndTypes FORMAT or the Native protocol
-    :return: The instance of the ClickHouse Type
+    Returns the DatastoreType instance parsed from the Datastore type name.  Instances are cached
+    :param name: Datastore type name as returned by Datastore in WithNamesAndTypes FORMAT or the Native protocol
+    :return: The instance of the Datastore Type
     """
     ch_type = type_cache.get(name, None)
     if not ch_type:
@@ -63,7 +63,7 @@ def get_from_name(name: str) -> ClickHouseType:
         try:
             ch_type = type_map[base].build(type_def)
         except KeyError:
-            err_str = f'Unrecognized ClickHouse type base: {base} name: {name}'
+            err_str = f'Unrecognized Datastore type base: {base} name: {name}'
             logger.error(err_str)
             raise InternalError(err_str) from None
         type_cache[name] = ch_type

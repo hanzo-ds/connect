@@ -6,7 +6,7 @@ from datastore_connect.driver.common import unescape_identifier
 # pylint: disable=too-many-branches
 def parse_callable(expr) -> Tuple[str, Tuple[Union[str, int], ...], str]:
     """
-    Parses a single level ClickHouse optionally 'callable' function/identifier.  The identifier is returned as the
+    Parses a single level Datastore optionally 'callable' function/identifier.  The identifier is returned as the
     first value in the response tuple.  If the expression is callable -- i.e. an identifier followed by 0 or more
     arguments in parentheses, the second returned value is a tuple of the comma separated arguments.  The third and
     final tuple value is any text remaining after the initial expression for further parsing/processing.
@@ -15,7 +15,7 @@ def parse_callable(expr) -> Tuple[str, Tuple[Union[str, int], ...], str]:
       "Tuple(String, Enum('one' = 1, 'two' = 2))" will return "Tuple", ("String", "Enum('one' = 1,'two' = 2)"), ""
       "MergeTree() PARTITION BY key" will return "MergeTree", (), "PARTITION BY key"
 
-    :param expr:  ClickHouse DDL or Column Name expression
+    :param expr:  Datastore DDL or Column Name expression
     :return: Tuple of the identifier, a tuple of arguments, and remaining text
     """
     expr = expr.strip()
@@ -79,8 +79,8 @@ def parse_callable(expr) -> Tuple[str, Tuple[Union[str, int], ...], str]:
 
 def parse_enum(expr) -> Tuple[Tuple[str], Tuple[int]]:
     """
-    Parse a ClickHouse enum definition expression of the form ('key1' = 1, 'key2' = 2)
-    :param expr: ClickHouse enum expression/arguments
+    Parse a Datastore enum definition expression of the form ('key1' = 1, 'key2' = 2)
+    :param expr: Datastore enum expression/arguments
     :return: Parallel tuples of string enum keys and integer enum values
     """
     keys = []
@@ -119,9 +119,9 @@ def parse_enum(expr) -> Tuple[Tuple[str], Tuple[int]]:
 
 def parse_columns(expr: str):
     """
-    Parse a ClickHouse column list of the form (col1 String, col2 Array(Tuple(String, Int32))).  This also handles
+    Parse a Datastore column list of the form (col1 String, col2 Array(Tuple(String, Int32))).  This also handles
     unnamed columns (such as Tuple definitions).  Mixed named and unnamed columns are not currently supported.
-    :param expr: ClickHouse enum expression/arguments
+    :param expr: Datastore enum expression/arguments
     :return: Parallel tuples of column types and column types (strings)
     """
     names = []

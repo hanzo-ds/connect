@@ -112,7 +112,7 @@ def escape_str(value: str):
 # pylint: disable=too-many-return-statements
 def format_query_value(value: Any, server_tz: tzinfo = pytz.UTC):
     """
-    Format Python values in a ClickHouse query
+    Format Python values in a Datastore query
     :param value: Python object
     :param server_tz: Server timezone for adjusting datetime values
     :return: Literal string for python value
@@ -153,7 +153,7 @@ def str_query_value(value: Any, server_tz: tzinfo = pytz.UTC):
 # pylint: disable=too-many-branches
 def format_bind_value(value: Any, server_tz: tzinfo = pytz.UTC, top_level: bool = True):
     """
-    Format Python values in a ClickHouse query
+    Format Python values in a Datastore query
     :param value: Python object
     :param server_tz: Server timezone for adjusting datetime values
     :param top_level: Flag for top level for nested structures

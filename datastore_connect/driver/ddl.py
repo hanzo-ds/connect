@@ -1,14 +1,14 @@
 from typing import NamedTuple, Sequence
 
-from datastore_connect.datatypes.base import ClickHouseType
+from datastore_connect.datatypes.base import DatastoreType
 
 
 class TableColumnDef(NamedTuple):
     """
-    Simplified ClickHouse Table Column definition for DDL
+    Simplified Datastore Table Column definition for DDL
     """
     name: str
-    ch_type: ClickHouseType
+    ch_type: DatastoreType
     expr_type: str = None
     expr: str = None
 

@@ -12,7 +12,7 @@ from datastore_connect.driver.binding import quote_identifier, format_str
 
 
 # pylint: disable=too-many-public-methods,no-self-use,unused-argument
-class ClickHouseDialect(DefaultDialect):
+class DatastoreDialect(DefaultDialect):
     """
     See :py:class:`sqlalchemy.engine.interfaces`
     """

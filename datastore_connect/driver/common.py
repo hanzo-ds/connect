@@ -55,7 +55,7 @@ def write_array(code: str, column: Sequence, dest: MutableSequence, col_name: Op
         if col_name:
             col_msg = f' for source column `{col_name}`'
         raise DataError(f'Unable to create Python array{col_msg}.  This is usually caused by trying to insert None ' +
-                                  'values into a ClickHouse column that is not Nullable') from ex
+                                  'values into a Datastore column that is not Nullable') from ex
 
 
 def write_uint64(value: int, dest: MutableSequence):
@@ -84,12 +84,12 @@ def write_leb128(value: int, dest: MutableSequence):
 
 def decimal_size(prec: int):
     """
-    Determine the bit size of a ClickHouse or Python Decimal needed to store a value of the requested precision
+    Determine the bit size of a Datastore or Python Decimal needed to store a value of the requested precision
     :param prec: Precision of the Decimal in total number of base 10 digits
     :return: Required bit size
     """
     if prec < 1 or prec > 79:
-        raise ArithmeticError(f'Invalid precision {prec} for ClickHouse Decimal type')
+        raise ArithmeticError(f'Invalid precision {prec} for Datastore Decimal type')
     if prec < 10:
         return 32
     if prec < 19:

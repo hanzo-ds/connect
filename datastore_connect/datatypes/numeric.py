@@ -3,7 +3,7 @@ from typing import Union, Type, Sequence, MutableSequence, Any
 
 from math import nan, isnan, isinf
 
-from datastore_connect.datatypes.base import TypeDef, ArrayType, ClickHouseType
+from datastore_connect.datatypes.base import TypeDef, ArrayType, DatastoreType
 from datastore_connect.driver.common import array_type, write_array, decimal_size, decimal_prec, first_value
 from datastore_connect.driver.ctypes import numpy_conv, data_conv
 from datastore_connect.driver.insert import InsertContext
@@ -95,7 +95,7 @@ class UInt64(IntBase):
         return column
 
 
-class BigInt(ClickHouseType, registered=False):
+class BigInt(DatastoreType, registered=False):
     _signed = True
     valid_formats = 'string', 'native'
     python_type = int
@@ -208,7 +208,7 @@ class Float64(Float):
     np_type = '<f8'
 
 
-class Bool(ClickHouseType):
+class Bool(DatastoreType):
     np_type = '?'
     python_type = bool
     byte_size = 1
@@ -230,7 +230,7 @@ class Boolean(Bool):
     pass
 
 
-class Enum(ClickHouseType):
+class Enum(DatastoreType):
     __slots__ = '_name_map', '_int_map'
     _array_type = 'b'
     valid_formats = 'native', 'int'
@@ -272,7 +272,7 @@ class Enum16(Enum):
     byte_size = 2
 
 
-class Decimal(ClickHouseType):
+class Decimal(DatastoreType):
     __slots__ = 'prec', 'scale', '_mult', '_zeros', 'byte_size', '_array_type'
     python_type = decimal.Decimal
     dec_size = 0

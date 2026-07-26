@@ -11,14 +11,14 @@ from datastore_connect.driver.httpclient import HttpClient
 from datastore_connect.driver.external import ExternalData
 from datastore_connect.driver.query import QueryContext, QueryResult
 from datastore_connect.driver.summary import QuerySummary
-from datastore_connect.datatypes.base import ClickHouseType
+from datastore_connect.datatypes.base import DatastoreType
 from datastore_connect.driver.insert import InsertContext
 
 
 # pylint: disable=too-many-public-methods,too-many-instance-attributes,too-many-arguments,too-many-positional-arguments,too-many-locals
 class AsyncClient:
     """
-    AsyncClient is a wrapper around the ClickHouse Client object that allows for async calls to the ClickHouse server.
+    AsyncClient is a wrapper around the Datastore Client object that allows for async calls to the Datastore server.
     Internally, each of the methods that uses IO is wrapped in a call to EventLoop.run_in_executor.
     """
 
@@ -32,11 +32,11 @@ class AsyncClient:
 
     def set_client_setting(self, key, value):
         """
-        Set a clickhouse setting for the client after initialization.  If a setting is not recognized by ClickHouse,
+        Set a datastore setting for the client after initialization.  If a setting is not recognized by Datastore,
         or the setting is identified as "read_only", this call will either throw a Programming exception or attempt
         to send the setting anyway based on the common setting 'invalid_setting_action'.
-        :param key: ClickHouse setting name
-        :param value: ClickHouse setting value
+        :param key: Datastore setting name
+        :param value: Datastore setting value
         """
         self.client.set_client_setting(key=key, value=value)
 
@@ -49,7 +49,7 @@ class AsyncClient:
 
     def set_access_token(self, access_token: str):
         """
-        Set the ClickHouse access token for the client
+        Set the Datastore access token for the client
         :param access_token: Access token string
         """
         self.client.set_access_token(access_token)
@@ -204,16 +204,16 @@ class AsyncClient:
                         external_data: Optional[ExternalData] = None,
                         transport_settings: Optional[Dict[str, str]] = None) -> bytes:
         """
-        Query method that simply returns the raw ClickHouse format bytes.
+        Query method that simply returns the raw Datastore format bytes.
         :param query: Query statement/format string
         :param parameters: Optional dictionary used to format the query
-        :param settings: Optional dictionary of ClickHouse settings (key/string values)
-        :param fmt: ClickHouse output format
-        :param use_database  Send the database parameter to ClickHouse so the command will be executed in the client
+        :param settings: Optional dictionary of Datastore settings (key/string values)
+        :param fmt: Datastore output format
+        :param use_database  Send the database parameter to Datastore so the command will be executed in the client
          database context
         :param external_data  External data to send with the query
         :param transport_settings: Optional dictionary of transport level settings (HTTP headers, etc.)
-        :return: bytes representing raw ClickHouse return value based on format
+        :return: bytes representing raw Datastore return value based on format
         """
 
         def _raw_query():
@@ -236,9 +236,9 @@ class AsyncClient:
         Query method that returns the result as an io.IOBase iterator.
         :param query: Query statement/format string
         :param parameters: Optional dictionary used to format the query
-        :param settings: Optional dictionary of ClickHouse settings (key/string values)
-        :param fmt: ClickHouse output format
-        :param use_database  Send the database parameter to ClickHouse so the command will be executed in the client
+        :param settings: Optional dictionary of Datastore settings (key/string values)
+        :param fmt: Datastore output format
+        :param use_database  Send the database parameter to Datastore so the command will be executed in the client
          database context
         :param external_data  External data to send with the query
         :param transport_settings: Optional dictionary of transport level settings (HTTP headers, etc.)
@@ -402,17 +402,17 @@ class AsyncClient:
         Creates or updates a reusable QueryContext object
         :param query: Query statement/format string
         :param parameters: Optional dictionary used to format the query
-        :param settings: Optional dictionary of ClickHouse settings (key/string values)
+        :param settings: Optional dictionary of Datastore settings (key/string values)
         :param query_formats: See QueryContext __init__ docstring
         :param column_formats: See QueryContext __init__ docstring
         :param encoding: See QueryContext __init__ docstring
-        :param use_none: Use None for ClickHouse NULL instead of default values.  Note that using None in Numpy
+        :param use_none: Use None for Datastore NULL instead of default values.  Note that using None in Numpy
           arrays will force the numpy array dtype to 'object', which is often inefficient.  This effect also
           will impact the performance of Pandas dataframes.
         :param column_oriented: Deprecated. Controls orientation of the QueryResult result_set property
         :param use_numpy: Return QueryResult columns as one-dimensional numpy arrays
-        :param max_str_len: Limit returned ClickHouse String values to this length, which allows a Numpy
-          structured array even with ClickHouse variable length String columns.  If 0, Numpy arrays for
+        :param max_str_len: Limit returned Datastore String values to this length, which allows a Numpy
+          structured array even with Datastore variable length String columns.  If 0, Numpy arrays for
           String columns will always be object arrays
         :param context: An existing QueryContext to be updated with any provided parameter values
         :param query_tz  Either a string or a pytz tzinfo object.  (Strings will be converted to tzinfo objects).
@@ -423,9 +423,9 @@ class AsyncClient:
         :param use_na_values: Deprecated alias for use_advanced_dtypes
         :param as_pandas Return the result columns as pandas.Series objects
         :param streaming Marker used to correctly configure streaming queries
-        :param external_data ClickHouse "external data" to send with query
+        :param external_data Datastore "external data" to send with query
         :param use_extended_dtypes:  Only relevant to Pandas Dataframe queries.  Use Pandas "missing types", such as
-          pandas.NA and pandas.NaT for ClickHouse NULL values, as well as extended Pandas dtypes such as IntegerArray
+          pandas.NA and pandas.NaT for Datastore NULL values, as well as extended Pandas dtypes such as IntegerArray
           and StringArray.  Defaulted to True for query_df methods
         :param transport_settings: Optional dictionary of transport level settings (HTTP headers, etc.)
         :return: Reusable QueryContext
@@ -451,12 +451,12 @@ class AsyncClient:
                           external_data: Optional[ExternalData] = None,
                           transport_settings: Optional[Dict[str, str]] = None):
         """
-        Query method using the ClickHouse Arrow format to return a PyArrow table
+        Query method using the Datastore Arrow format to return a PyArrow table
         :param query: Query statement/format string
         :param parameters: Optional dictionary used to format the query
-        :param settings: Optional dictionary of ClickHouse settings (key/string values)
-        :param use_strings:  Convert ClickHouse String type to Arrow string type (instead of binary)
-        :param external_data ClickHouse "external data" to send with query
+        :param settings: Optional dictionary of Datastore settings (key/string values)
+        :param use_strings:  Convert Datastore String type to Arrow string type (instead of binary)
+        :param external_data Datastore "external data" to send with query
         :param transport_settings: Optional dictionary of transport level settings (HTTP headers, etc.)
         :return: PyArrow.Table
         """
@@ -481,9 +481,9 @@ class AsyncClient:
         Query method that returns the results as a stream of Arrow tables
         :param query: Query statement/format string
         :param parameters: Optional dictionary used to format the query
-        :param settings: Optional dictionary of ClickHouse settings (key/string values)
-        :param use_strings:  Convert ClickHouse String type to Arrow string type (instead of binary)
-        :param external_data ClickHouse "external data" to send with query
+        :param settings: Optional dictionary of Datastore settings (key/string values)
+        :param use_strings:  Convert Datastore String type to Arrow string type (instead of binary)
+        :param external_data Datastore "external data" to send with query
         :param transport_settings: Optional dictionary of transport level settings (HTTP headers, etc.)
         :return: Generator that yields a PyArrow.Table for per block representing the result set
         """
@@ -507,16 +507,16 @@ class AsyncClient:
                       transport_settings: Optional[Dict[str, str]] = None) -> Union[str, int, Sequence[str], QuerySummary]:
         """
         Client method that returns a single value instead of a result set
-        :param cmd: ClickHouse query/command as a python format string
+        :param cmd: Datastore query/command as a python format string
         :param parameters: Optional dictionary of key/values pairs to be formatted
         :param data: Optional 'data' for the command (for INSERT INTO in particular)
-        :param settings: Optional dictionary of ClickHouse settings (key/string values)
-        :param use_database: Send the database parameter to ClickHouse so the command will be executed in the client
+        :param settings: Optional dictionary of Datastore settings (key/string values)
+        :param use_database: Send the database parameter to Datastore so the command will be executed in the client
          database context.  Otherwise, no database will be specified with the command.  This is useful for determining
          the default user database
-        :param external_data ClickHouse "external data" to send with command/query
+        :param external_data Datastore "external data" to send with command/query
         :param transport_settings: Optional dictionary of transport level settings (HTTP headers, etc.)
-        :return: Decoded response from ClickHouse as either a string, int, or sequence of strings, or QuerySummary
+        :return: Decoded response from Datastore as either a string, int, or sequence of strings, or QuerySummary
         if no data returned
         """
 
@@ -532,7 +532,7 @@ class AsyncClient:
     async def ping(self) -> bool:
         """
         Validate the connection, does not throw an Exception (see debug logs)
-        :return: ClickHouse server is up and reachable
+        :return: Datastore server is up and reachable
         """
 
         def _ping():
@@ -547,7 +547,7 @@ class AsyncClient:
                      data: Sequence[Sequence[Any]] = None,
                      column_names: Union[str, Iterable[str]] = '*',
                      database: Optional[str] = None,
-                     column_types: Sequence[ClickHouseType] = None,
+                     column_types: Sequence[DatastoreType] = None,
                      column_type_names: Sequence[str] = None,
                      column_oriented: bool = False,
                      settings: Optional[Dict[str, Any]] = None,
@@ -559,14 +559,14 @@ class AsyncClient:
         :param table: Target table
         :param data: Sequence of sequences of Python data
         :param column_names: Ordered list of column names or '*' if column types should be retrieved from the
-            ClickHouse table definition
+            Datastore table definition
         :param database: Target database -- will use client default database if not specified.
-        :param column_types: ClickHouse column types.  If set then column data does not need to be retrieved from
+        :param column_types: Datastore column types.  If set then column data does not need to be retrieved from
             the server
-        :param column_type_names: ClickHouse column type names.  If set then column data does not need to be
+        :param column_type_names: Datastore column type names.  If set then column data does not need to be
             retrieved from the server
         :param column_oriented: If true the data is already "pivoted" in column form
-        :param settings: Optional dictionary of ClickHouse settings (key/string values)
+        :param settings: Optional dictionary of Datastore settings (key/string values)
         :param context: Optional reusable insert context to allow repeated inserts into the same table with
             different data batches
         :param transport_settings: Optional dictionary of transport level settings (HTTP headers, etc.)
@@ -588,21 +588,21 @@ class AsyncClient:
                         database: Optional[str] = None,
                         settings: Optional[Dict] = None,
                         column_names: Optional[Sequence[str]] = None,
-                        column_types: Sequence[ClickHouseType] = None,
+                        column_types: Sequence[DatastoreType] = None,
                         column_type_names: Sequence[str] = None,
                         context: InsertContext = None,
                         transport_settings: Optional[Dict[str, str]] = None) -> QuerySummary:
         """
-        Insert a pandas DataFrame into ClickHouse.  If context is specified arguments other than df are ignored
-        :param table: ClickHouse table
+        Insert a pandas DataFrame into Datastore.  If context is specified arguments other than df are ignored
+        :param table: Datastore table
         :param df: two-dimensional pandas dataframe
-        :param database: Optional ClickHouse database
-        :param settings: Optional dictionary of ClickHouse settings (key/string values)
-        :param column_names: An optional list of ClickHouse column names.  If not set, the DataFrame column names
+        :param database: Optional Datastore database
+        :param settings: Optional dictionary of Datastore settings (key/string values)
+        :param column_names: An optional list of Datastore column names.  If not set, the DataFrame column names
            will be used
-        :param column_types: ClickHouse column types.  If set then column data does not need to be retrieved from
+        :param column_types: Datastore column types.  If set then column data does not need to be retrieved from
             the server
-        :param column_type_names: ClickHouse column type names.  If set then column data does not need to be
+        :param column_type_names: Datastore column type names.  If set then column data does not need to be
             retrieved from the server
         :param context: Optional reusable insert context to allow repeated inserts into the same table with
             different data batches
@@ -625,11 +625,11 @@ class AsyncClient:
                            settings: Optional[Dict] = None,
                            transport_settings: Optional[Dict[str, str]] = None) -> QuerySummary:
         """
-        Insert a PyArrow table DataFrame into ClickHouse using raw Arrow format
-        :param table: ClickHouse table
+        Insert a PyArrow table DataFrame into Datastore using raw Arrow format
+        :param table: Datastore table
         :param arrow_table: PyArrow Table object
-        :param database: Optional ClickHouse database
-        :param settings: Optional dictionary of ClickHouse settings (key/string values)
+        :param database: Optional Datastore database
+        :param settings: Optional dictionary of Datastore settings (key/string values)
         :param transport_settings: Optional dictionary of transport level settings (HTTP headers, etc.)
         :return: QuerySummary with summary information, throws exception if insert fails
         """
@@ -646,7 +646,7 @@ class AsyncClient:
                                     table: str,
                                     column_names: Optional[Union[str, Sequence[str]]] = None,
                                     database: Optional[str] = None,
-                                    column_types: Sequence[ClickHouseType] = None,
+                                    column_types: Sequence[DatastoreType] = None,
                                     column_type_names: Sequence[str] = None,
                                     column_oriented: bool = False,
                                     settings: Optional[Dict[str, Any]] = None,
@@ -659,11 +659,11 @@ class AsyncClient:
         :param column_names: Optional ordered list of column names.  If not set, all columns ('*') will be assumed
           in the order specified by the table definition
         :param database: Target database -- will use client default database if not specified
-        :param column_types: ClickHouse column types.  Optional  Sequence of ClickHouseType objects.  If neither column
+        :param column_types: Datastore column types.  Optional  Sequence of DatastoreType objects.  If neither column
            types nor column type names are set, actual column types will be retrieved from the server.
-        :param column_type_names: ClickHouse column type names.  Specified column types by name string
+        :param column_type_names: Datastore column type names.  Specified column types by name string
         :param column_oriented: If true the data is already "pivoted" in column form
-        :param settings: Optional dictionary of ClickHouse settings (key/string values)
+        :param settings: Optional dictionary of Datastore settings (key/string values)
         :param data: Initial dataset for insert
         :param transport_settings: Optional dictionary of transport level settings (HTTP headers, etc.)
         :return: Reusable insert context
@@ -704,11 +704,11 @@ class AsyncClient:
         Insert data already formatted in a bytes object
         :param table: Table name (whether qualified with the database name or not)
         :param column_names: Sequence of column names
-        :param insert_block: Binary or string data already in a recognized ClickHouse format
-        :param settings:  Optional dictionary of ClickHouse settings (key/string values)
-        :param compression:  Recognized ClickHouse `Accept-Encoding` header compression value
+        :param insert_block: Binary or string data already in a recognized Datastore format
+        :param settings:  Optional dictionary of Datastore settings (key/string values)
+        :param compression:  Recognized Datastore `Accept-Encoding` header compression value
         :param transport_settings: Optional dictionary of transport level settings (HTTP headers, etc.)
-        :param fmt: Valid clickhouse format
+        :param fmt: Valid datastore format
         """
 
         def _raw_insert():

@@ -16,8 +16,8 @@ numpy_conv = pync
 # pylint: disable=import-outside-toplevel,global-statement
 
 def connect_c_modules():
-    if not coerce_bool(os.environ.get('CLICKHOUSE_CONNECT_USE_C', True)):
-        logger.info('ClickHouse Connect C optimizations disabled')
+    if not coerce_bool(os.environ.get('DATASTORE_CONNECT_USE_C', True)):
+        logger.info('Datastore Connect C optimizations disabled')
         return
 
     global RespBuffCls, data_conv
@@ -27,7 +27,7 @@ def connect_c_modules():
 
         data_conv = cdc
         RespBuffCls = CResponseBuffer
-        logger.debug('Successfully imported ClickHouse Connect C data optimizations')
+        logger.debug('Successfully imported Datastore Connect C data optimizations')
         connect_numpy()
     except ImportError as ex:
         logger.warning('Unable to connect optimized C data functions [%s], falling back to pure Python',
@@ -40,9 +40,9 @@ def connect_numpy():
         import datastore_connect.driverc.npconv as cnc
 
         numpy_conv = cnc
-        logger.debug('Successfully import ClickHouse Connect C/Numpy optimizations')
+        logger.debug('Successfully import Datastore Connect C/Numpy optimizations')
     except ImportError as ex:
-        logger.debug('Unable to connect ClickHouse Connect C to Numpy API [%s], falling back to pure Python',
+        logger.debug('Unable to connect Datastore Connect C to Numpy API [%s], falling back to pure Python',
              str(ex))
 
 

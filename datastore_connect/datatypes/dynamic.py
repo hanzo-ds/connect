@@ -1,7 +1,7 @@
 from collections import namedtuple
 from typing import List, Sequence, Collection, Any
 
-from datastore_connect.datatypes.base import ClickHouseType, TypeDef
+from datastore_connect.datatypes.base import DatastoreType, TypeDef
 from datastore_connect.datatypes.registry import get_from_name
 from datastore_connect.driver.common import unescape_identifier, first_value, write_uint64
 from datastore_connect.driver.ctypes import data_conv
@@ -12,21 +12,21 @@ from datastore_connect.driver.query import QueryContext
 from datastore_connect.driver.types import ByteSource
 from datastore_connect.json_impl import any_to_json
 
-SHARED_DATA_TYPE: ClickHouseType
-STRING_DATA_TYPE: ClickHouseType
+SHARED_DATA_TYPE: DatastoreType
+STRING_DATA_TYPE: DatastoreType
 
 json_serialization_format = 0x1
 
 VariantState = namedtuple('VariantState', 'discriminator_node element_states')
 
 
-class Variant(ClickHouseType):
+class Variant(DatastoreType):
     _slots = 'element_types'
     python_type = object
 
     def __init__(self, type_def: TypeDef):
         super().__init__(type_def)
-        self.element_types: List[ClickHouseType] = [get_from_name(name) for name in type_def.values]
+        self.element_types: List[DatastoreType] = [get_from_name(name) for name in type_def.values]
         self._name_suffix = f"({', '.join(ch_type.name for ch_type in self.element_types)})"
 
     @property
@@ -49,7 +49,7 @@ class Variant(ClickHouseType):
 def read_variant_column(source: ByteSource,
                         num_rows: int,
                         ctx: QueryContext,
-                        variant_types: List[ClickHouseType],
+                        variant_types: List[DatastoreType],
                         element_states: List[Any]) -> Sequence:
     v_count = len(variant_types)
     discriminators = source.read_array('B', num_rows)
@@ -95,7 +95,7 @@ def read_dynamic_prefix(_, source: ByteSource, ctx: QueryContext) -> DynamicStat
     return DynamicState(struct_version, variant_types, variant_states)
 
 
-class Dynamic(ClickHouseType):
+class Dynamic(DatastoreType):
     python_type = object
     read_column_prefix = read_dynamic_prefix
 
@@ -128,7 +128,7 @@ def json_sample_size(_, sample: Collection) -> int:
     return total // len(sample) + 1
 
 
-def write_json(ch_type: ClickHouseType, column: Sequence, dest: bytearray, ctx: InsertContext):
+def write_json(ch_type: DatastoreType, column: Sequence, dest: bytearray, ctx: InsertContext):
     first = first_value(column, ch_type.nullable)
     write_col = column
     encoding = ctx.encoding or ch_type.encoding
@@ -139,7 +139,7 @@ def write_json(ch_type: ClickHouseType, column: Sequence, dest: bytearray, ctx: 
     handle_error(data_conv.write_str_col(write_col, ch_type.nullable, encoding, dest), ctx)
 
 
-def write_str_values(ch_type: ClickHouseType, column: Sequence, dest: bytearray, ctx: InsertContext):
+def write_str_values(ch_type: DatastoreType, column: Sequence, dest: bytearray, ctx: InsertContext):
     encoding = ctx.encoding or ch_type.encoding
     col = [''] * len(column)
     for ix, v in enumerate(column):
@@ -153,13 +153,13 @@ def write_str_values(ch_type: ClickHouseType, column: Sequence, dest: bytearray,
 JSONState = namedtuple('JSONState', 'serialize_version dynamic_paths typed_states dynamic_states')
 
 
-class JSON(ClickHouseType):
+class JSON(DatastoreType):
     _slots = 'typed_paths', 'typed_types'
     python_type = dict
     valid_formats = 'string', 'native'
     _data_size = json_sample_size
     write_column_data = write_json
-    shared_data_type: ClickHouseType
+    shared_data_type: DatastoreType
     max_dynamic_paths = 0
     max_dynamic_types = 0
     typed_paths = []
@@ -272,7 +272,7 @@ class JSON(ClickHouseType):
 
 
 # Note that this type is deprecated and should not be used, it included for temporary backward compatibility only
-class Object(ClickHouseType):
+class Object(DatastoreType):
     python_type = dict
     # Native is a Python type (primitive, dict, array), string is an actual JSON string
     valid_formats = 'string', 'native'

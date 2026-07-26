@@ -38,19 +38,19 @@ class TestException(BaseException):
 @fixture(scope='session', autouse=True, name='test_config')
 def test_config_fixture() -> Iterator[TestConfig]:
     common.set_setting('max_connection_age', 15)  # Make sure resetting connections doesn't break stuff
-    host = os.environ.get('CLICKHOUSE_CONNECT_TEST_HOST', 'localhost')
-    docker = host == 'localhost' and coerce_bool(os.environ.get('CLICKHOUSE_CONNECT_TEST_DOCKER', 'False'))
-    port = int(os.environ.get('CLICKHOUSE_CONNECT_TEST_PORT', '0'))
+    host = os.environ.get('DATASTORE_CONNECT_TEST_HOST', 'localhost')
+    docker = host == 'localhost' and coerce_bool(os.environ.get('DATASTORE_CONNECT_TEST_DOCKER', 'False'))
+    port = int(os.environ.get('DATASTORE_CONNECT_TEST_PORT', '0'))
     if not port:
         port = 8123
-    cloud = coerce_bool(os.environ.get('CLICKHOUSE_CONNECT_TEST_CLOUD', 'False'))
-    username = os.environ.get('CLICKHOUSE_CONNECT_TEST_USER', 'default')
-    password = os.environ.get('CLICKHOUSE_CONNECT_TEST_PASSWORD', '')
-    test_database = os.environ.get('CLICKHOUSE_CONNECT_TEST_DATABASE',
+    cloud = coerce_bool(os.environ.get('DATASTORE_CONNECT_TEST_CLOUD', 'False'))
+    username = os.environ.get('DATASTORE_CONNECT_TEST_USER', 'default')
+    password = os.environ.get('DATASTORE_CONNECT_TEST_PASSWORD', '')
+    test_database = os.environ.get('DATASTORE_CONNECT_TEST_DATABASE',
                                    f'ch_connect__{random.randint(100000, 999999)}__{int(time.time() * 1000)}')
-    compress = os.environ.get('CLICKHOUSE_CONNECT_TEST_COMPRESS', 'True')
-    insert_quorum = int(os.environ.get('CLICKHOUSE_CONNECT_TEST_INSERT_QUORUM', '0'))
-    proxy_address = os.environ.get('CLICKHOUSE_CONNECT_TEST_PROXY_ADDR', '')
+    compress = os.environ.get('DATASTORE_CONNECT_TEST_COMPRESS', 'True')
+    insert_quorum = int(os.environ.get('DATASTORE_CONNECT_TEST_INSERT_QUORUM', '0'))
+    proxy_address = os.environ.get('DATASTORE_CONNECT_TEST_PROXY_ADDR', '')
     yield TestConfig(host, port, username, password, docker, test_database, cloud, compress,
                      insert_quorum, proxy_address)
 
@@ -117,7 +117,7 @@ def test_client_fixture(test_config: TestConfig, test_create_client: Callable) -
             break
         except OperationalError as ex:
             if tries > 10:
-                raise TestException('Failed to connect to ClickHouse server after 30 seconds') from ex
+                raise TestException('Failed to connect to Datastore server after 30 seconds') from ex
             time.sleep(3)
     client.command(f'CREATE DATABASE IF NOT EXISTS {test_config.test_database}', use_database=False)
     yield client

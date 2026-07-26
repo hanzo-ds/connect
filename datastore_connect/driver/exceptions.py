@@ -5,17 +5,17 @@ libraries.  In most cases docstring are taken from the DBIApi 2.0 documentation
 """
 
 
-class ClickHouseError(Exception):
-    """Exception related to operation with ClickHouse."""
+class DatastoreError(Exception):
+    """Exception related to operation with Datastore."""
 
 
 # pylint: disable=redefined-builtin
-class Warning(Warning, ClickHouseError):
+class Warning(Warning, DatastoreError):
     """Exception raised for important warnings like data truncations
     while inserting, etc."""
 
 
-class Error(ClickHouseError):
+class Error(DatastoreError):
     """Exception that is the base class of all other error exceptions
     (not Warning)."""
 
@@ -77,7 +77,7 @@ class StreamClosedError(ProgrammingError):
 
 
 class StreamCompleteException(Exception):
-    """ Internal exception used to indicate the end of a ClickHouse query result stream."""
+    """ Internal exception used to indicate the end of a Datastore query result stream."""
 
 
 class StreamFailureError(Exception):

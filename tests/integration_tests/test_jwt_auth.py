@@ -148,7 +148,7 @@ async def test_jwt_auth_async_client_set_access_token_errors(test_config: TestCo
 
 
 CHECK_CLOUD_MODE_QUERY = "SELECT value='1' FROM system.settings WHERE name='cloud_mode'"
-JWT_SECRET_ENV_KEY = 'CLICKHOUSE_CONNECT_TEST_JWT_SECRET'
+JWT_SECRET_ENV_KEY = 'DATASTORE_CONNECT_TEST_JWT_SECRET'
 
 
 def make_access_token():

@@ -3,12 +3,12 @@ from sqlalchemy.sql.ddl import CreateTable
 
 from datastore_connect.cc_sqlalchemy.datatypes.sqltypes import UInt64, UInt32, DateTime
 from datastore_connect.cc_sqlalchemy.ddl.tableengine import ReplicatedMergeTree, ReplacingMergeTree
-from datastore_connect.cc_sqlalchemy.dialect import ClickHouseDialect
+from datastore_connect.cc_sqlalchemy.dialect import DatastoreDialect
 
-dialect = ClickHouseDialect()
+dialect = DatastoreDialect()
 
 replicated_mt_ddl = """\
-CREATE TABLE `replicated_mt_test` (`key` UInt64) Engine ReplicatedMergeTree('/clickhouse/tables/repl_mt_test',\
+CREATE TABLE `replicated_mt_test` (`key` UInt64) Engine ReplicatedMergeTree('/datastore/tables/repl_mt_test',\
  '{replica}') ORDER BY key\
 """
 
@@ -21,7 +21,7 @@ def test_table_def():
     metadata = db.MetaData()
 
     table = db.Table('replicated_mt_test', metadata, db.Column('key', UInt64),
-                     ReplicatedMergeTree(order_by='key', zk_path='/clickhouse/tables/repl_mt_test',
+                     ReplicatedMergeTree(order_by='key', zk_path='/datastore/tables/repl_mt_test',
                                          replica='{replica}'))
     ddl = str(CreateTable(table).compile('', dialect=dialect))
     assert ddl == replicated_mt_ddl
