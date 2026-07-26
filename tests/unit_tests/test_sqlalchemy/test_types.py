@@ -1,7 +1,7 @@
 from sqlalchemy import Integer, DateTime
 
-from clickhouse_connect.cc_sqlalchemy.datatypes.sqltypes import Nullable, Int64, DateTime64, LowCardinality, String
-from clickhouse_connect.cc_sqlalchemy.datatypes.base import sqla_type_map, sqla_type_from_name
+from datastore_connect.cc_sqlalchemy.datatypes.sqltypes import Nullable, Int64, DateTime64, LowCardinality, String
+from datastore_connect.cc_sqlalchemy.datatypes.base import sqla_type_map, sqla_type_from_name
 
 
 def test_mapping():

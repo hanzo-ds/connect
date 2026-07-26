@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Callable
 
-from clickhouse_connect.driver import Client
+from datastore_connect.driver import Client
 
 
 def test_raw_insert(test_client: Client, table_context: Callable):

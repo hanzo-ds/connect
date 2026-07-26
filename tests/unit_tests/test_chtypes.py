@@ -1,6 +1,6 @@
 # pylint: disable=protected-access
-from clickhouse_connect.datatypes.container import Nested
-from clickhouse_connect.datatypes.registry import get_from_name as gfn
+from datastore_connect.datatypes.container import Nested
+from datastore_connect.datatypes.registry import get_from_name as gfn
 
 
 def test_enum_parse():

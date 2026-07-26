@@ -19,14 +19,14 @@ assignees: ''
 
 ### Code example
 ```python
-import clickhouse_connect
+import datastore_connect
 ```
 
-### clickhouse-connect and/or ClickHouse server logs
+### datastore-connect and/or ClickHouse server logs
 
 ### Configuration
 #### Environment
-* clickhouse-connect version:
+* datastore-connect version:
 * Python version:
 * Operating system:
 

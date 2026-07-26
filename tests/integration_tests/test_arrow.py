@@ -4,8 +4,8 @@ import string
 
 import pytest
 
-from clickhouse_connect.driver import Client
-from clickhouse_connect.driver.options import arrow
+from datastore_connect.driver import Client
+from datastore_connect.driver.options import arrow
 
 
 def test_arrow(test_client: Client, table_context: Callable):

@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 from urllib3 import ProxyManager
 
-import clickhouse_connect
+import datastore_connect
 from tests.integration_tests.conftest import TestConfig
 
 
@@ -12,7 +12,7 @@ def test_proxies(test_config: TestConfig):
     if not test_config.proxy_address:
         pytest.skip('Proxy address not configured')
     if test_config.port in (8123, 10723):
-        client = clickhouse_connect.get_client(host=test_config.host,
+        client = datastore_connect.get_client(host=test_config.host,
                                                port=test_config.port,
                                                username=test_config.username,
                                                password=test_config.password,
@@ -22,7 +22,7 @@ def test_proxies(test_config: TestConfig):
 
         try:
             os.environ['HTTP_PROXY'] = f'http://{test_config.proxy_address}'
-            client = clickhouse_connect.get_client(host=test_config.host,
+            client = datastore_connect.get_client(host=test_config.host,
                                                    port=test_config.port,
                                                    username=test_config.username,
                                                    password=test_config.password)
@@ -31,7 +31,7 @@ def test_proxies(test_config: TestConfig):
             client.close()
 
             os.environ['no_proxy'] = f'{test_config.host}:{test_config.port}'
-            client = clickhouse_connect.get_client(host=test_config.host,
+            client = datastore_connect.get_client(host=test_config.host,
                                                    port=test_config.port,
                                                    username=test_config.username,
                                                    password=test_config.password)
@@ -43,7 +43,7 @@ def test_proxies(test_config: TestConfig):
             os.environ.pop('no_proxy', None)
     else:
         cert_file = f'{Path(__file__).parent}/proxy_ca_cert.crt'
-        client = clickhouse_connect.get_client(host=test_config.host,
+        client = datastore_connect.get_client(host=test_config.host,
                                                port=test_config.port,
                                                username=test_config.username,
                                                password=test_config.password,
@@ -54,7 +54,7 @@ def test_proxies(test_config: TestConfig):
 
         try:
             os.environ['HTTPS_PROXY'] = f'{test_config.proxy_address}'
-            client = clickhouse_connect.get_client(host=test_config.host,
+            client = datastore_connect.get_client(host=test_config.host,
                                                    port=test_config.port,
                                                    username=test_config.username,
                                                    password=test_config.password,

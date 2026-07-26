@@ -4,9 +4,9 @@ from typing import Callable
 
 import pytest
 
-from clickhouse_connect import create_client
-from clickhouse_connect.driver.client import Client
-from clickhouse_connect.driver.exceptions import DatabaseError
+from datastore_connect import create_client
+from datastore_connect.driver.client import Client
+from datastore_connect.driver.exceptions import DatabaseError
 from tests.integration_tests.conftest import TestConfig
 
 CSV_CONTENT = """abc,1,1

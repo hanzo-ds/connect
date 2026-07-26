@@ -1,4 +1,4 @@
-from clickhouse_connect.driver.query import QueryContext
+from datastore_connect.driver.query import QueryContext
 
 
 def test_copy_context():

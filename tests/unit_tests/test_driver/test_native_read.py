@@ -1,10 +1,10 @@
 from ipaddress import IPv4Address
 from uuid import UUID
 
-from clickhouse_connect.datatypes import registry
-from clickhouse_connect.driver.insert import InsertContext
-from clickhouse_connect.driver.query import QueryContext
-from clickhouse_connect.driver.transform import NativeTransform
+from datastore_connect.datatypes import registry
+from datastore_connect.driver.insert import InsertContext
+from datastore_connect.driver.query import QueryContext
+from datastore_connect.driver.transform import NativeTransform
 from tests.helpers import bytes_source
 from tests.unit_tests.test_driver.binary import NESTED_BINARY
 

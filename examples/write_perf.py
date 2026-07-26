@@ -5,8 +5,8 @@ import time
 import random
 import clickhouse_driver
 
-import clickhouse_connect
-from clickhouse_connect.tools.testing import TableContext
+import datastore_connect
+from datastore_connect.tools.testing import TableContext
 
 
 inserts = [{'query': 'SELECT trip_id, pickup, dropoff, pickup_longitude, ' +
@@ -17,13 +17,13 @@ inserts = [{'query': 'SELECT trip_id, pickup, dropoff, pickup_longitude, ' +
             'columns': 'number UInt64'}]
 
 excluded = {}
-cc_client = clickhouse_connect.get_client(compress=False)
+cc_client = datastore_connect.get_client(compress=False)
 cd_client = clickhouse_driver.Client(host='localhost')
 run_id = random.randint(0, 10000000)
 
 
 def write_python_columns(ix, insert):
-    print('\n\tclickhouse-connect Python Insert (column oriented):')
+    print('\n\tdatastore-connect Python Insert (column oriented):')
     data = cc_client.query(insert['query']).result_columns
     table = f'perf_test_insert_{run_id}_{ix}'
     with test_ctx(table, insert) as ctx:
@@ -33,7 +33,7 @@ def write_python_columns(ix, insert):
 
 
 def write_python_rows(ix, insert):
-    print('\n\tclickhouse-connect Python Insert (row oriented):')
+    print('\n\tdatastore-connect Python Insert (row oriented):')
     data = cc_client.query(insert['query']).result_rows
     table = f'perf_test_insert_{run_id}_{ix}'
     with test_ctx(table, insert) as ctx:

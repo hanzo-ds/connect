@@ -15,7 +15,7 @@ This script is not intended to be rigorous or scientific.  For entertainment pur
 
 import time
 import clickhouse_driver  # pylint: disable=import-error
-import clickhouse_connect
+import datastore_connect
 
 
 queries = [#'SELECT trip_id, pickup, dropoff, pickup_longitude, pickup_latitude FROM taxis',
@@ -24,26 +24,26 @@ queries = [#'SELECT trip_id, pickup, dropoff, pickup_longitude, pickup_latitude 
            #"SELECT * FROM perftest.ontime WHERE FlightDate < '2017-02-18'"
            ]
 
-cc_client = clickhouse_connect.get_client(compress=False)
+cc_client = datastore_connect.get_client(compress=False)
 cd_client = clickhouse_driver.Client(host='localhost')
 
 
 def read_python_columns(query):
-    print('\n\tclickhouse-connect Python Batch (column oriented):')
+    print('\n\tdatastore-connect Python Batch (column oriented):')
     start = time.time()
     columns = cc_client.query(query).result_columns
     _print_result(start, len(columns[0]))
 
 
 def read_python_rows(query):
-    print('\n\tclickhouse-connect Python Batch (row oriented):')
+    print('\n\tdatastore-connect Python Batch (row oriented):')
     start = time.time()
     rows = cc_client.query(query).result_rows
     _print_result(start, len(rows))
 
 
 def read_python_stream_columns(query):
-    print('\n\tclickhouse-connect Python Stream (column blocks):')
+    print('\n\tdatastore-connect Python Stream (column blocks):')
     rows = 0
     start = time.time()
     with cc_client.query_column_block_stream(query) as stream:
@@ -53,7 +53,7 @@ def read_python_stream_columns(query):
 
 
 def read_python_stream_rows(query):
-    print('\n\tclickhouse-connect Python Stream (row blocks):')
+    print('\n\tdatastore-connect Python Stream (row blocks):')
     rows = 0
     start = time.time()
     with cc_client.query_row_block_stream(query) as stream:
@@ -84,7 +84,7 @@ def read_arrow(query):
 
 
 def read_pandas_stream(query):
-    print('\n\tclickhouse-connect Pandas Stream')
+    print('\n\tdatastore-connect Pandas Stream')
     start = time.time()
     rows = 0
     with cc_client.query_df_stream(query) as stream:

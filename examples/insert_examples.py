@@ -1,6 +1,6 @@
-import clickhouse_connect
+import datastore_connect
 
-client: clickhouse_connect.driver.Client
+client: datastore_connect.driver.Client
 
 
 def inserted_nested_flat():
@@ -70,7 +70,7 @@ ORDER BY key
 
 def main():
     global client  # pylint:  disable=global-statement
-    client = clickhouse_connect.get_client()
+    client = datastore_connect.get_client()
     print ('Nested example flatten_nested = 1 (Default)')
     inserted_nested_flat()
     print('\n\nNested example flatten_nested = 0')

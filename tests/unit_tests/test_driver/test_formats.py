@@ -1,9 +1,9 @@
-from clickhouse_connect.datatypes.format import set_default_formats, set_write_format
-from clickhouse_connect.datatypes.network import IPv6
-from clickhouse_connect.datatypes.numeric import Int32
-from clickhouse_connect.datatypes.string import FixedString
-from clickhouse_connect.driver.context import BaseQueryContext
-from clickhouse_connect.driver.query import QueryContext
+from datastore_connect.datatypes.format import set_default_formats, set_write_format
+from datastore_connect.datatypes.network import IPv6
+from datastore_connect.datatypes.numeric import Int32
+from datastore_connect.datatypes.string import FixedString
+from datastore_connect.driver.context import BaseQueryContext
+from datastore_connect.driver.query import QueryContext
 
 
 def test_default_formats():

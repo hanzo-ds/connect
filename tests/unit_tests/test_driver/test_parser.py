@@ -1,6 +1,6 @@
-from clickhouse_connect.datatypes.registry import get_from_name
-from clickhouse_connect.driver.parser import parse_callable, parse_enum
-from clickhouse_connect.driver.query import remove_sql_comments
+from datastore_connect.datatypes.registry import get_from_name
+from datastore_connect.driver.parser import parse_callable, parse_enum
+from datastore_connect.driver.query import remove_sql_comments
 
 
 def test_parse_callable():
